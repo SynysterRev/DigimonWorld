@@ -7,7 +7,6 @@
 #include "Components/DigimonLifeComponent.h"
 #include "Data/DigimonBaseData.h"
 #include "Data/DigimonGlobalData.h"
-#include "Subsystems/DigimonDataSubsystem.h"
 #include "Subsystems/DigimonTimeSubsystem.h"
 
 // Sets default values for this component's properties
