@@ -40,8 +40,7 @@ void UDigimonNeedsComponent::CheckPoopTime()
 }
 
 void UDigimonNeedsComponent::TriggerPoopTimer()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Need poop"));
+{;
 	bNeedToPoop = true;
 	if (UDigimonLifeComponent* LifeComponent = DigimonOwner->GetDigimonLifeComponent())
 	{
@@ -152,8 +151,7 @@ void UDigimonNeedsComponent::InitializeDigimonNeeds(const FDigimonPartnerData& P
 	if (!GlobalsData->PoopHours.Contains(DigimonOwner->GetDigimonStage()))
 		return;
 
-	// PoopInterval = GlobalsData->PoopHours[DigimonOwner->GetDigimonStage()] * 60;
-	PoopInterval = 15;
+	PoopInterval = GlobalsData->PoopHours[DigimonOwner->GetDigimonStage()] * 60;
 	MaxTimeToFeed = GlobalsData->MaxTimeToFeedDigimon;
 }
 
