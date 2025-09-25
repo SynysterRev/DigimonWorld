@@ -27,8 +27,10 @@ void APartnerDigimonCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (NeedsComponent)
 	{
 		NeedsComponent->OnToiletNeedTriggered.RemoveDynamic(this, &APartnerDigimonCharacter::OnToiletNeeded);
-		NeedsComponent->OnToiletUsed.RemoveDynamic(this, &APartnerDigimonCharacter::OnToiletUsed);
+		// NeedsComponent->OnToiletUsed.RemoveDynamic(this, &APartnerDigimonCharacter::OnToiletUsed);
 		NeedsComponent->OnToiletTimeout.RemoveDynamic(this, &APartnerDigimonCharacter::OnToiletTimeout);
+		NeedsComponent->OnHungerNeedsTriggered.RemoveDynamic(this, &APartnerDigimonCharacter::OnHungerTriggered);
+		NeedsComponent->OnHungerTimeout.RemoveDynamic(this, &APartnerDigimonCharacter::OnHungerTimeout);
 	}
 	Super::EndPlay(EndPlayReason);
 }
@@ -52,7 +54,7 @@ void APartnerDigimonCharacter::InitializeDigimon(const FName& InDigimonID, UDigi
 		NeedsComponent->InitializeDigimonNeeds(PartnerData, Globals);
 	}
 	NeedsComponent->OnToiletNeedTriggered.AddDynamic(this, &APartnerDigimonCharacter::OnToiletNeeded);
-	NeedsComponent->OnToiletUsed.AddDynamic(this, &APartnerDigimonCharacter::OnToiletUsed);
+	// NeedsComponent->OnToiletUsed.AddDynamic(this, &APartnerDigimonCharacter::OnToiletUsed);
 	NeedsComponent->OnToiletTimeout.AddDynamic(this, &APartnerDigimonCharacter::OnToiletTimeout);
 	NeedsComponent->OnHungerNeedsTriggered.AddDynamic(this, &APartnerDigimonCharacter::OnHungerTriggered);
 	NeedsComponent->OnHungerTimeout.AddDynamic(this, &APartnerDigimonCharacter::OnHungerTimeout);
@@ -64,6 +66,14 @@ void APartnerDigimonCharacter::AssignTamer(ATamerCharacter* Tamer)
 	{
 		TamerOwner = Tamer;
 	}
+}
+
+bool APartnerDigimonCharacter::NeedToUseToilet() const
+{
+	if (!NeedsComponent)
+		return false;
+	
+	return NeedsComponent->GetNeedToPoop();
 }
 
 void APartnerDigimonCharacter::TryConsumeItem()
@@ -113,7 +123,7 @@ void APartnerDigimonCharacter::IncreaseBaseStat(EDigimonStatType Stat, int32 Amo
 		break;
 
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("Unknown stat type in IncreaseBaseStat"));
+		UE_LOG(LogDigimonCharacter, Warning, TEXT("Unknown stat type in IncreaseBaseStat"));
 		break;
 	}
 }
@@ -123,8 +133,14 @@ void APartnerDigimonCharacter::OnToiletNeeded()
 	AddNewBubbleIndicator(EDigimonBubbleType::Toilet);
 }
 
-void APartnerDigimonCharacter::OnToiletUsed(int32 ReduceWeight)
+void APartnerDigimonCharacter::UseToilet()
 {
+	OnToiletUsedTrigger.Broadcast();
+	int32 ReduceWeight = 1;
+	if (NeedsComponent)
+	{
+		NeedsComponent->UseToilet(ReduceWeight);
+	}
 	if (LifeComponent)
 	{
 		LifeComponent->RemoveWeight(ReduceWeight);

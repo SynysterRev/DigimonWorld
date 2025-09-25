@@ -41,11 +41,11 @@ void UDigimonNeedsComponent::CheckPoopTime()
 
 void UDigimonNeedsComponent::TriggerPoopTimer()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Need poop"));
 	bNeedToPoop = true;
 	if (UDigimonLifeComponent* LifeComponent = DigimonOwner->GetDigimonLifeComponent())
 	{
-		// TimeForToilet = 12.0f + 0.6f * LifeComponent->GetDiscipline();
-		TimeForToilet = 12.0f;
+		TimeForToilet = 12.0f + 0.6f * LifeComponent->GetDiscipline();
 	}
 	OnToiletNeedTriggered.Broadcast();
 }
@@ -60,22 +60,25 @@ void UDigimonNeedsComponent::TriggerPoop(bool bIsVisible)
 	ResetToiletTimers();
 	int32 ReduceWeight = PoopSize * 0.25f + FMath::RandRange(0, 3);
 
-
-	if (bIsVisible)
+	if (!bIsVisible)
 	{
-		// display mesh
 		OnToiletUsed.Broadcast(ReduceWeight);
 	}
 	else
 	{
+		// display mesh
 		OnToiletTimeout.Broadcast(ReduceWeight);
 	}
 }
 
-void UDigimonNeedsComponent::UseToilet()
+void UDigimonNeedsComponent::UseToilet(int32& OutReduceWeight)
 {
-	if (!bNeedToPoop) return;
-	TriggerPoop(false);
+	if (!bNeedToPoop)
+		return;
+	
+	OutReduceWeight = PoopSize * 0.25f + FMath::RandRange(0, 3);
+	ResetToiletTimers();
+	// TriggerPoop(false);
 }
 
 void UDigimonNeedsComponent::OnHourChanged(int32 NewHour)

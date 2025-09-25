@@ -13,17 +13,20 @@ class APartnerDigimonCharacter;
 struct FDigimonPartnerData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FToiletTimeTriggered);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FToiletTimeOver, int32, ReduceWeight);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHungerTime);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHungerTimeOver, bool, bIsBelowThreshold);
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DIGIMONWORLD_API UDigimonNeedsComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UDigimonNeedsComponent();
 
@@ -33,7 +36,6 @@ protected:
 	void CheckPoopTime();
 	void TriggerPoopTimer();
 	void ToiletTimeOut();
-	void TriggerPoop(bool bIsVisible);
 
 	UFUNCTION()
 	void OnHourChanged(int32 NewHour);
@@ -58,7 +60,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category="Life")
 	int32 PoopSize;
-	
+
 	UPROPERTY(BlueprintReadWrite, Category="Life")
 	EDigimonActiveTime DigimonActiveTime;
 
@@ -74,18 +76,22 @@ protected:
 	int32 TimeSinceLastPoop = 0;
 	int32 TimeSinceToiletNeed = 0;
 	float TimeForToilet = .0f;
-	
+
 	bool bIsHungry = false;
 	int32 MaxTimeToFeed = 0;
 	int32 TimeSinceHungry = 0;
 
-public:	
+public:
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	void InitializeDigimonNeeds(const FDigimonPartnerData& PartnerData, const UDigimonGlobalsData* GlobalsData);
 
-	void UseToilet();
+	bool GetNeedToPoop() const { return bNeedToPoop; }
+	void UseToilet(int32& OutReduceWeight);
+	void TriggerPoop(bool bIsVisible);
+
 	/**
 	 * @param EnergyGain Energy restored by the food
 	 * @return True if full, false otherwise

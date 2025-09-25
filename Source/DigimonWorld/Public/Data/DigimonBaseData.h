@@ -13,22 +13,22 @@ struct DIGIMONWORLD_API FDigimonStats
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseHealth;
+	int32 BaseHealth = 500;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseMana;
+	int32 BaseMana = 500;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseAttack;
+	int32 BaseAttack = 50;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseDefense;
+	int32 BaseDefense = 50;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseSpeed;
+	int32 BaseSpeed = 50;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseBrain;
+	int32 BaseBrain= 50;
 };
 
 USTRUCT(BlueprintType)
@@ -43,10 +43,10 @@ struct DIGIMONWORLD_API FDigimonBaseData
 	FText DisplayName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	EDigimonAttribute DigimonAttribute;
+	EDigimonAttribute DigimonAttribute = EDigimonAttribute::Vaccine;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	EDigimonStage DigimonStage;
+	EDigimonStage DigimonStage = EDigimonStage::Rookie;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FDigimonStats DigimonStats;
@@ -67,7 +67,7 @@ struct DIGIMONWORLD_API FDigimonPartnerData : public FTableRowBase
 	FDigimonBaseData DigimonBaseData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EDigimonActiveTime DigimonActiveTime;
+	EDigimonActiveTime DigimonActiveTime = EDigimonActiveTime::Day;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<EDigimonStatType, int32> TrainingModifiers;
@@ -76,22 +76,22 @@ struct DIGIMONWORLD_API FDigimonPartnerData : public FTableRowBase
 	TArray<int32> HungryHours; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 HungerThreshold;
+	int32 HungerThreshold = 20;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 FatigueRate;
+	int32 FatigueRate = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxAge;
+	int32 MaxAge = 4;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxEnergy;
+	int32 MaxEnergy = 40;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Weight;
+	int32 Weight = 15;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 PoopSize;
+	int32 PoopSize = 8;
 };
 
 USTRUCT(BlueprintType)

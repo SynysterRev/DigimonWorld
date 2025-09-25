@@ -15,6 +15,7 @@
 #include "Components/DigimonLifeComponent.h"
 #include "Components/DigimonNeedsComponent.h"
 #include "Subsystems/DigimonDataSubsystem.h"
+#include "Subsystems/DigimonUISubsystem.h"
 
 DEFINE_LOG_CATEGORY(LogTamerCharacter);
 
@@ -54,6 +55,29 @@ ATamerCharacter::ATamerCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+}
+
+void ATamerCharacter::TryUseToilet()
+{
+	if (!CurrentDigimon)
+		return;
+
+	if (CurrentDigimon->NeedToUseToilet())
+	{
+		CurrentDigimon->UseToilet();
+		UGameInstance* GameInstance = GetGameInstance();
+		if (!GameInstance)
+		{
+			OnUseToiletEnd();
+			return;
+		}
+		if (UDigimonUISubsystem* UISubsystem = GameInstance->GetSubsystem<UDigimonUISubsystem>())
+		{
+			UISubsystem->ShowToiletSign();
+			UISubsystem->OnToiletSignAnimationEnd.AddDynamic(this, &ATamerCharacter::OnUseToiletEnd);
+			DisableCharacterInputs();
+		}
+	}
 }
 
 void ATamerCharacter::BeginPlay()
@@ -181,6 +205,37 @@ void ATamerCharacter::Feed(const FInputActionValue& Value)
 	if (UDigimonLifeComponent* LifeComponent = CurrentDigimon->GetDigimonLifeComponent())
 	{
 		
+	}
+}
+
+void ATamerCharacter::OnUseToiletEnd()
+{
+	UGameInstance* GameInstance = GetGameInstance();
+	if (!GameInstance)
+	{
+		EnableCharacterInputs();
+		return;
+	}
+	if (UDigimonUISubsystem* UISubsystem = GameInstance->GetSubsystem<UDigimonUISubsystem>())
+	{
+		UISubsystem->OnToiletSignAnimationEnd.RemoveDynamic(this, &ATamerCharacter::OnUseToiletEnd);
+		EnableCharacterInputs();
+	}
+}
+
+void ATamerCharacter::DisableCharacterInputs()
+{
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		DisableInput(PC);
+	}
+}
+
+void ATamerCharacter::EnableCharacterInputs()
+{
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		EnableInput(PC);
 	}
 }
 

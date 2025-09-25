@@ -11,6 +11,8 @@ enum class EDigimonStatType : uint8;
 class UDigimonLifeComponent;
 class UPartnerStatsComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FToiletTriggered);
+
 UCLASS()
 class DIGIMONWORLD_API APartnerDigimonCharacter : public ADigimonCharacter
 {
@@ -24,6 +26,8 @@ public:
 	virtual void InitializeDigimon(const FName& InDigimonID, UDigimonDataSubsystem* DataSubsystem) override;
 	
 	void AssignTamer(ATamerCharacter* Tamer);
+	bool NeedToUseToilet() const;
+	void UseToilet();
 	void TryConsumeItem();
 
 	ATamerCharacter* GetTamerCharacter() const { return TamerOwner; }
@@ -32,6 +36,9 @@ public:
 
 	FORCEINLINE UDigimonLifeComponent* GetDigimonLifeComponent() const { return LifeComponent; }
 	FORCEINLINE UDigimonNeedsComponent* GetDigimonNeedsComponent() const { return NeedsComponent; }
+
+	UPROPERTY(BlueprintAssignable)
+	FToiletTriggered OnToiletUsedTrigger;
 
 protected:
 
@@ -64,9 +71,6 @@ protected:
 
 	UFUNCTION()
 	void OnToiletNeeded();
-
-	UFUNCTION()
-	void OnToiletUsed(int32 ReduceWeight);
 
 	UFUNCTION()
 	void OnToiletTimeout(int32 ReduceWeight);

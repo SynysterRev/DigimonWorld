@@ -65,10 +65,10 @@ struct FDigimonActivePeriod
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin=0, ClampMax= 23))
-	int32 StartHour;
+	int32 StartHour = 4;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin=0, ClampMax= 23))
-	int32 EndHour;
+	int32 EndHour = 19;
 };
 
 UCLASS(BlueprintType)

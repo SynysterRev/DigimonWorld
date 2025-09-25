@@ -47,20 +47,23 @@ public:
 	// Sets default values for this character's properties
 	ATamerCharacter();
 
+	void TryUseToilet();
+
 protected:
 
 	virtual void BeginPlay() override;
 	
-	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
-
-	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-
 	void Feed(const FInputActionValue& Value);
 
-	virtual void NotifyControllerChanged() override;
+	void DisableCharacterInputs();
+	void EnableCharacterInputs();
 
+	UFUNCTION()
+	void OnUseToiletEnd();
+
+	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
