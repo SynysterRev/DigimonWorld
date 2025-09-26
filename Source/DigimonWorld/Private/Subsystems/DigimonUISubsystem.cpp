@@ -31,7 +31,7 @@ UDigimonToiletSignWidget* UDigimonUISubsystem::GetOrCreateSignWidget()
 		                                                          TEXT("ToiletSignWidget"));
 		if (ToiletSignWidget)
 		{
-			ToiletSignWidget->AddToViewport(50);
+			ToiletSignWidget->AddToViewport(10);
 		}
 	}
 	return ToiletSignWidget;

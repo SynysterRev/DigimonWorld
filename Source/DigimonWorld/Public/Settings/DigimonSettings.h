@@ -7,6 +7,7 @@
 #include "DigimonSettings.generated.h"
 
 
+class UDigimonMenuSettings;
 class UDigimonUISettings;
 class UDigimonGlobalsData;
 
@@ -26,6 +27,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Config, Category = "UI")
 	TSoftObjectPtr<UDigimonUISettings> DigimonUISettings;
+
+	UPROPERTY(EditAnywhere, Config, Category = "Menu")
+	TSoftObjectPtr<UDigimonMenuSettings> DigimonMenuSettings;
 
 	UFUNCTION(BlueprintCallable, Category = "Settings")
 	static const UDigimonSettings* GetDigimonWorldSettings();

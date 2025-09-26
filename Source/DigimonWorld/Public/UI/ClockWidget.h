@@ -17,9 +17,6 @@ class DIGIMONWORLD_API UClockWidget : public UUserWidget
 protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* TimeText;
-
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* EnergyText;
     
 	virtual void NativeConstruct() override;
     

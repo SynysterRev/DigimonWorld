@@ -15,6 +15,7 @@
 #include "Components/DigimonLifeComponent.h"
 #include "Components/DigimonNeedsComponent.h"
 #include "Subsystems/DigimonDataSubsystem.h"
+#include "Subsystems/DigimonTimeSubsystem.h"
 #include "Subsystems/DigimonUISubsystem.h"
 
 DEFINE_LOG_CATEGORY(LogTamerCharacter);
@@ -77,6 +78,10 @@ void ATamerCharacter::TryUseToilet()
 			UISubsystem->OnToiletSignAnimationEnd.AddDynamic(this, &ATamerCharacter::OnUseToiletEnd);
 			DisableCharacterInputs();
 		}
+		if (UDigimonTimeSubsystem* TimeSubsystem = GameInstance->GetSubsystem<UDigimonTimeSubsystem>())
+		{
+			TimeSubsystem->PauseTime();
+		}
 	}
 }
 
@@ -124,20 +129,6 @@ void ATamerCharacter::BeginPlay()
 
 //////////////////////////////////////////////////////////////////////////
 // Input
-
-void ATamerCharacter::NotifyControllerChanged()
-{
-	Super::NotifyControllerChanged();
-
-	// Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
-}
 
 void ATamerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -220,6 +211,10 @@ void ATamerCharacter::OnUseToiletEnd()
 	{
 		UISubsystem->OnToiletSignAnimationEnd.RemoveDynamic(this, &ATamerCharacter::OnUseToiletEnd);
 		EnableCharacterInputs();
+	}
+	if (UDigimonTimeSubsystem* TimeSubsystem = GameInstance->GetSubsystem<UDigimonTimeSubsystem>())
+	{
+		TimeSubsystem->ResumeTime();
 	}
 }
 

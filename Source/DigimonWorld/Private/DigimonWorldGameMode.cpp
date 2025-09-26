@@ -7,7 +7,7 @@
 ADigimonWorldGameMode::ADigimonWorldGameMode()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/Characters/Tamers/BP_TamerCharacter"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/Characters/Tamer/BP_TamerCharacter"));
 	if (DefaultPawnClass != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;

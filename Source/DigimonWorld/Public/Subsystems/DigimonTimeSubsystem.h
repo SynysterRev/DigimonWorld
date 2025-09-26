@@ -29,6 +29,9 @@ public:
 	int32 GetCurrentHourOfDay() const { return FMath::FloorToInt(CurrentTimeOfDay); }
 	int32 GetCurrentDay() const { return CurrentDay; }
 
+	void ResumeTime() { bCanTick = true;}
+	void PauseTime()  { bCanTick = false;}
+
 	// float GetTimeSince(float PreviousTime) const;
 
 	UPROPERTY(BlueprintAssignable)
