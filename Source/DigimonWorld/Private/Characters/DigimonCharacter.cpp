@@ -66,6 +66,7 @@ void ADigimonCharacter::AdjustCollisionAndUI()
 void ADigimonCharacter::InitializeBaseData(const FDigimonBaseData& BaseData)
 {
 	DigimonStage = BaseData.DigimonStage;
+	DisplayName = BaseData.DisplayName;
 	DigimonAttribute = BaseData.DigimonAttribute;
 	StatsComponent->InitializeStats(BaseData.DigimonStats);
 	ChangeMesh(BaseData.SkeletalMesh.Get());

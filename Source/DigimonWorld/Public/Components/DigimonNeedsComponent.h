@@ -92,6 +92,8 @@ public:
 	void UseToilet(int32& OutReduceWeight);
 	void TriggerPoop(bool bIsVisible);
 
+	FDigimonActivePeriod GetDigimonActivePeriod() const { return DigimonActivePeriod; }
+
 	/**
 	 * @param EnergyGain Energy restored by the food
 	 * @return True if full, false otherwise

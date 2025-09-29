@@ -27,8 +27,6 @@ void UDigimonMenuSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UDigimonMenuSubsystem::OpenPauseMenu()
 {
-	if (!MenuSettings)
-		return;
 	if (UMenuStack* MenuStack = GetOrCreateMenuStack())
 	{
 		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
@@ -40,14 +38,22 @@ void UDigimonMenuSubsystem::OpenPauseMenu()
 
 void UDigimonMenuSubsystem::ClosePauseMenu()
 {
-	if (!MenuSettings)
-		return;
-
 	if (UMenuStack* MenuStack = GetOrCreateMenuStack())
 	{
 		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
 		{
 			MenuStack->PopWidget(PauseMenu);
+		}
+	}
+}
+
+void UDigimonMenuSubsystem::OpenMenu(const FName& MenuName)
+{
+	if (UMenuStack* MenuStack = GetOrCreateMenuStack())
+	{
+		if (UCommonActivatableWidget* NewMenu = GetOrCreateMenu(MenuName))
+		{
+			MenuStack->PushWidget(NewMenu);
 		}
 	}
 }
@@ -58,6 +64,9 @@ UCommonActivatableWidget* UDigimonMenuSubsystem::GetOrCreateMenu(FName MenuName)
 	{
 		return *Found;
 	}
+
+	if (!MenuSettings)
+		return nullptr;
 
 	if (TSubclassOf<UCommonActivatableWidget>* FoundClass = MenuSettings->MenuWidgets.Find(MenuName))
 	{

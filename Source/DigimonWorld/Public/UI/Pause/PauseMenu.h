@@ -21,12 +21,16 @@ protected:
 	TObjectPtr<UMenuButtonBase> PartnerButton = nullptr;
 
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
+
+	// virtual bool NativeOnHandleBackAction() override;
+	
 
 public:
 	
 	UFUNCTION()
-	void Test();
+	void OpenPartnerInfo() const;
 	
 };

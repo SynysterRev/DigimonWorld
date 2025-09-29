@@ -57,4 +57,8 @@ public:
     
 	UFUNCTION(BlueprintPure, Category = "Digimon Info")
 	EDigimonAttribute GetDigimonAttribute() const { return DigimonAttribute; }
+
+	FText GetDisplayName() const { return DisplayName; }
+
+	FORCEINLINE UDigimonStatsComponent* GetDigimonStatsComponent() const { return StatsComponent; }
 };

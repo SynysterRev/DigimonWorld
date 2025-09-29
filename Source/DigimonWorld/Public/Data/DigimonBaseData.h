@@ -14,21 +14,21 @@ struct DIGIMONWORLD_API FDigimonStats
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	int32 BaseHealth = 500;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	int32 BaseMana = 500;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	int32 BaseAttack = 50;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	int32 BaseDefense = 50;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	int32 BaseSpeed = 50;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseBrain= 50;
+	int32 BaseBrain = 50;
 };
 
 USTRUCT(BlueprintType)
@@ -73,7 +73,7 @@ struct DIGIMONWORLD_API FDigimonPartnerData : public FTableRowBase
 	TMap<EDigimonStatType, int32> TrainingModifiers;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<int32> HungryHours; 
+	TArray<int32> HungryHours;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 HungerThreshold = 20;

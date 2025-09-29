@@ -22,6 +22,7 @@ public:
 	
 	void OpenPauseMenu();
 	void ClosePauseMenu();
+	void OpenMenu(const FName& MenuName);
 
 private:
 	

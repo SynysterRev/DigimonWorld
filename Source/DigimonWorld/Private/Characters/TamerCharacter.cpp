@@ -118,8 +118,11 @@ void ATamerCharacter::BeginPlay()
 				CurrentDigimon->AssignTamer(this);
 				if (UGameInstance* GameInstance = World->GetGameInstance())
 				{
-					UDigimonDataSubsystem* DataSubsystem = GameInstance->GetSubsystem<UDigimonDataSubsystem>();
-					CurrentDigimon->InitializeDigimon("Agumon", DataSubsystem);
+					if (UDigimonDataSubsystem* DataSubsystem = GameInstance->GetSubsystem<UDigimonDataSubsystem>())
+					{
+						CurrentDigimon->InitializeDigimon("Agumon", DataSubsystem);
+						DataSubsystem->SetDigimonCharacter(CurrentDigimon);
+					}
 				}
 				CurrentDigimon->FinishSpawning(TransformSpawn);
 			}
