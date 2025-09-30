@@ -6,6 +6,7 @@
 #include "CommonActivatableWidget.h"
 #include "PartnerStatusWidget.generated.h"
 
+class UDigimonStatusStatsWidget;
 class APartnerDigimonCharacter;
 class UBaseInfoWidget;
 /**
@@ -45,10 +46,13 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UBaseInfoWidget> ManaPoints = nullptr;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UDigimonStatusStatsWidget> StatsWidget = nullptr;
+
 	UPROPERTY(Transient)
 	TObjectPtr<APartnerDigimonCharacter> CurrentDigimon = nullptr;
 
-	void InitializeStats();
+	void InitializeStats() const;
 	void InitializeInfo() const;
 
 public:

@@ -10,9 +10,10 @@
 #include "Components/DigimonStatsComponent.h"
 #include "Subsystems/DigimonDataSubsystem.h"
 #include "UI/CommonWidgets/BaseInfoWidget.h"
+#include "UI/CommonWidgets/DigimonStatusStatsWidget.h"
 
 
-void UPartnerStatusWidget::InitializeStats()
+void UPartnerStatusWidget::InitializeStats() const
 {
 	UDigimonStatsComponent* StatsComponent = CurrentDigimon->GetDigimonStatsComponent();
 
@@ -33,6 +34,11 @@ void UPartnerStatusWidget::InitializeStats()
 		int32 CurrentMana = StatsComponent->CurrentMana;
 		FText ManaPointsText = FText::FromString(FString::Printf(TEXT("%d / %d"), CurrentMana, MaxMana));
 		ManaPoints->SetValue(ManaPointsText);
+	}
+
+	if (StatsWidget)
+	{
+		StatsWidget->InitializeStats(StatsComponent);
 	}
 }
 
