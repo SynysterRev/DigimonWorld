@@ -19,6 +19,7 @@ protected:
 	class UTextBlock* TimeText;
     
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
     
 	UFUNCTION()
 	void OnMinuteChanged(int32 NewHour, int32 NewMinute);

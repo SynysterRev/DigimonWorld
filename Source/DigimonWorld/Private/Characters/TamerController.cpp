@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Subsystems/DigimonMenuSubsystem.h"
+#include "Utilities/DigimonSubsystems.h"
 
 void ATamerController::BeginPlay()
 {
@@ -31,7 +32,8 @@ void ATamerController::SetupInputComponent()
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		EnhancedInputComponent->BindAction(PauseMenuAction, ETriggerEvent::Started, this, &ATamerController::OpenPauseMenu);
+		EnhancedInputComponent->BindAction(PauseMenuAction, ETriggerEvent::Started, this,
+		                                   &ATamerController::OpenPauseMenu);
 	}
 }
 
@@ -75,11 +77,8 @@ void ATamerController::EnableMenuInput(bool bEnable) const
 
 void ATamerController::OpenPauseMenu(const FInputActionValue& Value)
 {
-	if (UGameInstance* GameInstance = GetGameInstance())
+	if (UDigimonMenuSubsystem* MenuSubsystem = UDigimonSubsystems::GetSubsystem<UDigimonMenuSubsystem>(this))
 	{
-		if (UDigimonMenuSubsystem* MenuSubsystem = GameInstance->GetSubsystem<UDigimonMenuSubsystem>())
-		{
-			MenuSubsystem->OpenPauseMenu();
-		}
+		MenuSubsystem->OpenPauseMenu();
 	}
 }

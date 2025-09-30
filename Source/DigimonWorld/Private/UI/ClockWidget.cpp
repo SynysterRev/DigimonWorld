@@ -5,11 +5,12 @@
 
 #include "Components/TextBlock.h"
 #include "Subsystems/DigimonTimeSubsystem.h"
+#include "Utilities/DigimonSubsystems.h"
 
 void UClockWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	if (auto* TimeSystem = GetGameInstance()->GetSubsystem<UDigimonTimeSubsystem>())
+	if (auto* TimeSystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
 	{
 		TimeSystem->OnMinuteChanged.AddDynamic(this, &UClockWidget::OnMinuteChanged);
         
@@ -18,6 +19,15 @@ void UClockWidget::NativeConstruct()
 					   FMath::FloorToInt((TimeSystem->GetCurrentTimeOfDay() - 
 					   FMath::FloorToInt(TimeSystem->GetCurrentTimeOfDay())) * 60.0f));
 	}
+}
+
+void UClockWidget::NativeDestruct()
+{
+	if (auto* TimeSystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
+	{
+		TimeSystem->OnMinuteChanged.RemoveDynamic(this, &UClockWidget::OnMinuteChanged);
+	}
+	Super::NativeDestruct();
 }
 
 void UClockWidget::OnMinuteChanged(int32 NewHour, int32 NewMinute)

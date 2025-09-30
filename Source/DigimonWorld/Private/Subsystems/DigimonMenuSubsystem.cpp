@@ -6,7 +6,9 @@
 #include "CommonActivatableWidget.h"
 #include "Data/DigimonMenuSettings.h"
 #include "Settings/DigimonSettings.h"
+#include "Subsystems/DigimonTimeSubsystem.h"
 #include "UI/MenuStack.h"
+#include "Utilities/DigimonSubsystems.h"
 
 DEFINE_LOG_CATEGORY(LogDigimonMenuSubsystem);
 
@@ -32,6 +34,10 @@ void UDigimonMenuSubsystem::OpenPauseMenu()
 		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
 		{
 			MenuStack->PushWidget(PauseMenu);
+			if (auto* Subsystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
+			{
+				Subsystem->PauseTime();
+			}
 		}
 	}
 }
@@ -43,6 +49,10 @@ void UDigimonMenuSubsystem::ClosePauseMenu()
 		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
 		{
 			MenuStack->PopWidget(PauseMenu);
+			if (auto* Subsystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
+			{
+				Subsystem->ResumeTime();
+			}
 		}
 	}
 }

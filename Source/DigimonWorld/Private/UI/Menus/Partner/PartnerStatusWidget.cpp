@@ -10,6 +10,7 @@
 #include "Components/DigimonStatsComponent.h"
 #include "Subsystems/DigimonDataSubsystem.h"
 #include "UI/CommonWidgets/BaseInfoWidget.h"
+#include "UI/CommonWidgets/DigimonStatusGaugesWidget.h"
 #include "UI/CommonWidgets/DigimonStatusStatsWidget.h"
 
 
@@ -74,6 +75,11 @@ void UPartnerStatusWidget::InitializeInfo() const
 	{
 		FText DigimonAttribute = FDigimonUtility::GetTextForDigimonAttribute(CurrentDigimon->GetDigimonAttribute());
 		Attribute->SetValue(DigimonAttribute);
+	}
+
+	if (GaugesWidget)
+	{
+		GaugesWidget->InitializeGauges(LifeComponent);
 	}
 
 	UDigimonNeedsComponent* NeedsComponent = CurrentDigimon->GetDigimonNeedsComponent();

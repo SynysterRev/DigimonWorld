@@ -4,11 +4,7 @@
 #include "Components/DigimonLifeComponent.h"
 
 #include "Subsystems/DigimonTimeSubsystem.h"
-
-const int32 MAX_VIRUS_BAR = 16;
-const int32 MAX_DISICPLINE = 100;
-const int32 MAX_HAPPINESS = 100;
-const int32 MAX_WEIGHT = 999;
+#include "Utilities/DigimonSubsystems.h"
 
 // Sets default values for this component's properties
 UDigimonLifeComponent::UDigimonLifeComponent()
@@ -42,7 +38,7 @@ void UDigimonLifeComponent::InitializeDigimonLife(const FDigimonPartnerData& Par
 		return;
 	}
 	
-	if (auto* TimeSystem = GetOwner()->GetGameInstance()->GetSubsystem<UDigimonTimeSubsystem>())
+	if (auto* TimeSystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
 	{
 		TimeSystem->OnHourChanged.AddDynamic(this, &UDigimonLifeComponent::OnHourChanged);
 		BornHour = TimeSystem->GetCurrentHourOfDay();
@@ -99,17 +95,17 @@ void UDigimonLifeComponent::SetDiscipline(int32 Amount)
 
 void UDigimonLifeComponent::AddHappiness(int32 Amount)
 {
-	Happiness = FMath::Clamp(Happiness + Amount, -MAX_HAPPINESS, MAX_HAPPINESS);
+	Happiness = FMath::Clamp(Happiness + Amount, 0, MAX_HAPPINESS);
 }
 
 void UDigimonLifeComponent::RemoveHappiness(int32 Amount)
 {
-	Happiness = FMath::Clamp(Happiness - Amount, -MAX_HAPPINESS, MAX_HAPPINESS);
+	Happiness = FMath::Clamp(Happiness - Amount, 0, MAX_HAPPINESS);
 }
 
 void UDigimonLifeComponent::SetHappiness(int32 Amount)
 {
-	Happiness = FMath::Clamp(Amount, -MAX_HAPPINESS, MAX_HAPPINESS);
+	Happiness = FMath::Clamp(Amount, 0, MAX_HAPPINESS);
 }
 
 void UDigimonLifeComponent::AddWeight(int32 Amount)
@@ -119,11 +115,26 @@ void UDigimonLifeComponent::AddWeight(int32 Amount)
 
 void UDigimonLifeComponent::RemoveWeight(int32 Amount)
 {
-	Happiness = FMath::Clamp(Weight - Amount, 0, MAX_WEIGHT);
+	Weight = FMath::Clamp(Weight - Amount, 0, MAX_WEIGHT);
 }
 
 void UDigimonLifeComponent::SetWeight(int32 Amount)
 {
-	Happiness = FMath::Clamp(Amount, 0, MAX_WEIGHT);
+	Weight = FMath::Clamp(Amount, 0, MAX_WEIGHT);
+}
+
+void UDigimonLifeComponent::AddTiredness(int32 Amount)
+{
+	Tiredness = FMath::Clamp(Tiredness + Amount, 0, MAX_TIREDNESS);
+}
+
+void UDigimonLifeComponent::RemoveTiredness(int32 Amount)
+{
+	Tiredness = FMath::Clamp(Tiredness - Amount, 0, MAX_TIREDNESS);
+}
+
+void UDigimonLifeComponent::SetTiredness(int32 Amount)
+{
+	Tiredness = FMath::Clamp(Amount, 0, MAX_TIREDNESS);
 }
 

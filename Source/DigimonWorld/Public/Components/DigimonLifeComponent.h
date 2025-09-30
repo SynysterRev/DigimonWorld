@@ -7,6 +7,12 @@
 #include "Data/DigimonBaseData.h"
 #include "DigimonLifeComponent.generated.h"
 
+static const int32 MAX_VIRUS_BAR = 16;
+static const int32 MAX_DISICPLINE = 100;
+static const int32 MAX_HAPPINESS = 100;
+static const int32 MAX_TIREDNESS = 100;
+static const int32 MAX_WEIGHT = 999;
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DIGIMONWORLD_API UDigimonLifeComponent : public UActorComponent
@@ -51,6 +57,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category="Life")
 	int32 BornHour = 6;
 
+	UPROPERTY(BlueprintReadWrite, Category="Life")
+	int32 Tiredness = 0;
+
 public:
 	int32 GetAge() const { return Age; }
 	int32 GetWeight() const { return Weight; }
@@ -59,6 +68,7 @@ public:
 	int32 GetDiscipline() const { return Discipline; }
 	int32 GetVirusGauge() const { return VirusGauge; }
 	int32 GetCareMistakes() const { return CareMistakes; }
+	int32 GetTiredness() const { return Tiredness; }
 	
 	void InitializeDigimonLife(const FDigimonPartnerData& PartnerData);
 
@@ -79,4 +89,7 @@ public:
 	void AddWeight(int32 Amount);
 	void RemoveWeight(int32 Amount);
 	void SetWeight(int32 Amount);
+	void AddTiredness(int32 Amount);
+	void RemoveTiredness(int32 Amount);
+	void SetTiredness(int32 Amount);
 };

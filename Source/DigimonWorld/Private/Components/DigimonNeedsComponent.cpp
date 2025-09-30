@@ -8,6 +8,7 @@
 #include "Data/DigimonBaseData.h"
 #include "Data/DigimonGlobalData.h"
 #include "Subsystems/DigimonTimeSubsystem.h"
+#include "Utilities/DigimonSubsystems.h"
 
 // Sets default values for this component's properties
 UDigimonNeedsComponent::UDigimonNeedsComponent()
@@ -139,7 +140,7 @@ void UDigimonNeedsComponent::InitializeDigimonNeeds(const FDigimonPartnerData& P
 
 	TimeSinceLastPoop = 0;
 	TimeForToilet = 0.0f;
-	if (auto* TimeSystem = GetOwner()->GetGameInstance()->GetSubsystem<UDigimonTimeSubsystem>())
+	if (auto* TimeSystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
 	{
 		TimeSystem->OnHourChanged.AddDynamic(this, &UDigimonNeedsComponent::OnHourChanged);
 		TimeSystem->OnMinuteChanged.AddDynamic(this, &UDigimonNeedsComponent::OnMinuteChanged);

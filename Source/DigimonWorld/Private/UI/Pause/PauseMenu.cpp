@@ -5,6 +5,7 @@
 
 #include "Subsystems/DigimonMenuSubsystem.h"
 #include "UI/CommonWidgets/MenuButtonBase.h"
+#include "Utilities/DigimonSubsystems.h"
 
 void UPauseMenu::NativeConstruct()
 {
@@ -23,26 +24,20 @@ UWidget* UPauseMenu::NativeGetDesiredFocusTarget() const
 	return PartnerButton;
 }
 
-// bool UPauseMenu::NativeOnHandleBackAction()
-// {
-// 	if (UGameInstance* GameInstance = GetGameInstance())
-// 	{
-// 		if (UDigimonMenuSubsystem* MenuSubsystem = GameInstance->GetSubsystem<UDigimonMenuSubsystem>())
-// 		{
-// 			MenuSubsystem->ClosePauseMenu();
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
+bool UPauseMenu::NativeOnHandleBackAction()
+{
+	if (UDigimonMenuSubsystem* MenuSubsystem = UDigimonSubsystems::GetSubsystem<UDigimonMenuSubsystem>(this))
+	{
+		MenuSubsystem->ClosePauseMenu();
+		return true;
+	}
+	return false;
+}
 
 void UPauseMenu::OpenPartnerInfo() const
 {
-	if (UGameInstance* GameInstance = GetGameInstance())
+	if (UDigimonMenuSubsystem* MenuSubsystem = UDigimonSubsystems::GetSubsystem<UDigimonMenuSubsystem>(this))
 	{
-		if (UDigimonMenuSubsystem* MenuSubsystem = GameInstance->GetSubsystem<UDigimonMenuSubsystem>())
-		{
-			MenuSubsystem->OpenMenu("PartnerMenu");
-		}
+		MenuSubsystem->OpenMenu("PartnerMenu");
 	}
 }

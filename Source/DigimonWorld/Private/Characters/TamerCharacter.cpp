@@ -17,6 +17,7 @@
 #include "Subsystems/DigimonDataSubsystem.h"
 #include "Subsystems/DigimonTimeSubsystem.h"
 #include "Subsystems/DigimonUISubsystem.h"
+#include "Utilities/DigimonSubsystems.h"
 
 DEFINE_LOG_CATEGORY(LogTamerCharacter);
 
@@ -24,7 +25,7 @@ DEFINE_LOG_CATEGORY(LogTamerCharacter);
 ATamerCharacter::ATamerCharacter()
 {
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-		
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -51,7 +52,8 @@ ATamerCharacter::ATamerCharacter()
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
@@ -66,22 +68,19 @@ void ATamerCharacter::TryUseToilet()
 	if (CurrentDigimon->NeedToUseToilet())
 	{
 		CurrentDigimon->UseToilet();
-		UGameInstance* GameInstance = GetGameInstance();
-		if (!GameInstance)
-		{
-			OnUseToiletEnd();
-			return;
-		}
-		if (UDigimonUISubsystem* UISubsystem = GameInstance->GetSubsystem<UDigimonUISubsystem>())
+		if (UDigimonUISubsystem* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
 		{
 			UISubsystem->ShowToiletSign();
 			UISubsystem->OnToiletSignAnimationEnd.AddDynamic(this, &ATamerCharacter::OnUseToiletEnd);
 			DisableCharacterInputs();
+
+			if (UDigimonTimeSubsystem* TimeSubsystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
+			{
+				TimeSubsystem->PauseTime();
+			}
+			return;
 		}
-		if (UDigimonTimeSubsystem* TimeSubsystem = GameInstance->GetSubsystem<UDigimonTimeSubsystem>())
-		{
-			TimeSubsystem->PauseTime();
-		}
+		OnUseToiletEnd();
 	}
 }
 
@@ -116,13 +115,11 @@ void ATamerCharacter::BeginPlay()
 			if (CurrentDigimon)
 			{
 				CurrentDigimon->AssignTamer(this);
-				if (UGameInstance* GameInstance = World->GetGameInstance())
+				if (UDigimonDataSubsystem* DataSubsystem = UDigimonSubsystems::GetSubsystem<
+					UDigimonDataSubsystem>(this))
 				{
-					if (UDigimonDataSubsystem* DataSubsystem = GameInstance->GetSubsystem<UDigimonDataSubsystem>())
-					{
-						CurrentDigimon->InitializeDigimon("Agumon", DataSubsystem);
-						DataSubsystem->SetDigimonCharacter(CurrentDigimon);
-					}
+					CurrentDigimon->InitializeDigimon("Agumon", DataSubsystem);
+					DataSubsystem->SetDigimonCharacter(CurrentDigimon);
 				}
 				CurrentDigimon->FinishSpawning(TransformSpawn);
 			}
@@ -136,8 +133,8 @@ void ATamerCharacter::BeginPlay()
 void ATamerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATamerCharacter::Move);
 
@@ -147,7 +144,10 @@ void ATamerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	}
 	else
 	{
-		UE_LOG(LogTamerCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		UE_LOG(LogTamerCharacter, Error,
+		       TEXT(
+			       "'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."
+		       ), *GetNameSafe(this));
 	}
 }
 
@@ -164,7 +164,7 @@ void ATamerCharacter::Move(const FInputActionValue& Value)
 
 		// get forward vector
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
+
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
@@ -194,28 +194,20 @@ void ATamerCharacter::Feed(const FInputActionValue& Value)
 	CurrentDigimon->TryConsumeItem();
 	if (UDigimonNeedsComponent* NeedsComponent = CurrentDigimon->GetDigimonNeedsComponent())
 	{
-		
 	}
 	if (UDigimonLifeComponent* LifeComponent = CurrentDigimon->GetDigimonLifeComponent())
 	{
-		
 	}
 }
 
 void ATamerCharacter::OnUseToiletEnd()
 {
-	UGameInstance* GameInstance = GetGameInstance();
-	if (!GameInstance)
-	{
-		EnableCharacterInputs();
-		return;
-	}
-	if (UDigimonUISubsystem* UISubsystem = GameInstance->GetSubsystem<UDigimonUISubsystem>())
+	EnableCharacterInputs();
+	if (UDigimonUISubsystem* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
 	{
 		UISubsystem->OnToiletSignAnimationEnd.RemoveDynamic(this, &ATamerCharacter::OnUseToiletEnd);
-		EnableCharacterInputs();
 	}
-	if (UDigimonTimeSubsystem* TimeSubsystem = GameInstance->GetSubsystem<UDigimonTimeSubsystem>())
+	if (UDigimonTimeSubsystem* TimeSubsystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
 	{
 		TimeSubsystem->ResumeTime();
 	}
@@ -236,4 +228,3 @@ void ATamerCharacter::EnableCharacterInputs()
 		EnableInput(PC);
 	}
 }
-

@@ -6,6 +6,7 @@
 #include "CommonUISubsystemBase.h"
 #include "DigimonMenuSubsystem.generated.h"
 
+class UDigimonTimeSubsystem;
 class UCommonActivatableWidget;
 class UDigimonMenuSettings;
 DECLARE_LOG_CATEGORY_EXTERN(LogDigimonMenuSubsystem, Log, All);
@@ -37,6 +38,5 @@ private:
 
 	UCommonActivatableWidget* GetOrCreateMenu(FName MenuName);
 
-	UMenuStack* GetOrCreateMenuStack();
-	
+	UMenuStack* GetOrCreateMenuStack();	
 };
