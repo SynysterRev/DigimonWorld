@@ -14,6 +14,7 @@
 #include "Characters/PartnerDigimonCharacter.h"
 #include "Components/DigimonLifeComponent.h"
 #include "Components/DigimonNeedsComponent.h"
+#include "Components/InteractionComponent.h"
 #include "Subsystems/DigimonDataSubsystem.h"
 #include "Subsystems/DigimonTimeSubsystem.h"
 #include "Subsystems/DigimonUISubsystem.h"
@@ -58,6 +59,8 @@ ATamerCharacter::ATamerCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>(TEXT("InteractionComponent"));
 }
 
 void ATamerCharacter::TryUseToilet()
@@ -140,7 +143,10 @@ void ATamerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATamerCharacter::Look);
+		
 		EnhancedInputComponent->BindAction(FeedAction, ETriggerEvent::Started, this, &ATamerCharacter::Feed);
+
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ATamerCharacter::Interact);
 	}
 	else
 	{
@@ -187,7 +193,7 @@ void ATamerCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void ATamerCharacter::Feed(const FInputActionValue& Value)
+void ATamerCharacter::Feed()
 {
 	if (!CurrentDigimon) return;
 
@@ -197,6 +203,14 @@ void ATamerCharacter::Feed(const FInputActionValue& Value)
 	}
 	if (UDigimonLifeComponent* LifeComponent = CurrentDigimon->GetDigimonLifeComponent())
 	{
+	}
+}
+
+void ATamerCharacter::Interact()
+{
+	if (InteractionComponent)
+	{
+		InteractionComponent->StartInteraction();
 	}
 }
 

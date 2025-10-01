@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/Pause/PauseMenu.h"
+#include "UI/Menus/PauseMenu.h"
 
 #include "Subsystems/DigimonMenuSubsystem.h"
 #include "UI/CommonWidgets/MenuButtonBase.h"

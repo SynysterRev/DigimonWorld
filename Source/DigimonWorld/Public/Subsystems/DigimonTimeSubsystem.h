@@ -32,6 +32,8 @@ public:
 	void ResumeTime() { bCanTick = true;}
 	void PauseTime()  { bCanTick = false;}
 
+	void SkipTime(int32 NumberOfHour);
+
 	// float GetTimeSince(float PreviousTime) const;
 
 	UPROPERTY(BlueprintAssignable)
@@ -52,4 +54,6 @@ private:
 	int32 LastMinute = 59;
 
 	bool bCanTick = true;
+
+	void CalculateCurrentTime();
 };

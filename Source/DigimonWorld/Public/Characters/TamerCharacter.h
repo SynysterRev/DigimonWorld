@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "TamerCharacter.generated.h"
 
+class UInteractionComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -28,6 +29,9 @@ class DIGIMONWORLD_API ATamerCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInteractionComponent> InteractionComponent;
+
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
@@ -37,6 +41,9 @@ class DIGIMONWORLD_API ATamerCharacter : public ACharacter
 	TObjectPtr<UInputAction> LookAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> InteractAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> FeedAction;
 
 public:
@@ -44,14 +51,15 @@ public:
 	ATamerCharacter();
 
 	void TryUseToilet();
+	APartnerDigimonCharacter* GetPartnerDigimon() { return CurrentDigimon; }
 
 protected:
-
 	virtual void BeginPlay() override;
-	
+
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
-	void Feed(const FInputActionValue& Value);
+	void Feed();
+	void Interact();
 
 	void DisableCharacterInputs();
 	void EnableCharacterInputs();
@@ -67,10 +75,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<APartnerDigimonCharacter> CurrentDigimon = nullptr;
 
-public:	
+public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
 };

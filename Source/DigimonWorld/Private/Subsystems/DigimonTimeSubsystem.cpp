@@ -19,7 +19,17 @@ void UDigimonTimeSubsystem::Tick(float DeltaTime)
 {
 	float GameTimeDelta = DeltaTime * TIME_SCALE;
 	CurrentTimeOfDay += GameTimeDelta / 3600.0f;
+	CalculateCurrentTime();
+}
 
+void UDigimonTimeSubsystem::SkipTime(int32 NumberOfHour)
+{
+	CurrentTimeOfDay += NumberOfHour;
+	CalculateCurrentTime();
+}
+
+void UDigimonTimeSubsystem::CalculateCurrentTime()
+{
 	// Handle a new day
 	if (CurrentTimeOfDay >= 24.0f)
 	{
