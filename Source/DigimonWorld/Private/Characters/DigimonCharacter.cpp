@@ -6,7 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/DigimonStatsComponent.h"
 #include "Components/WidgetComponent.h"
-#include "UI/DigimonBubbleIndicatorWidget.h"
+#include "UI/Digimons/DigimonBubbleIndicatorWidget.h"
 
 DEFINE_LOG_CATEGORY(LogDigimonCharacter);
 

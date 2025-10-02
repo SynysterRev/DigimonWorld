@@ -19,16 +19,16 @@ struct DIGIMONWORLD_API FDigimonStats
 	int32 BaseMana = 500;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseAttack = 50;
+	int32 BaseStrength = 50;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseDefense = 50;
+	int32 BaseStamina = 50;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	int32 BaseSpeed = 50;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
-	int32 BaseBrain = 50;
+	int32 BaseWisdom = 50;
 };
 
 USTRUCT(BlueprintType)

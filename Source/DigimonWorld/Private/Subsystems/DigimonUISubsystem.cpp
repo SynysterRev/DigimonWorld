@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Data/DigimonUISettings.h"
 #include "Settings/DigimonSettings.h"
-#include "UI/DigimonToiletSignWidget.h"
+#include "UI/Digimons/DigimonToiletSignWidget.h"
 
 DEFINE_LOG_CATEGORY(LogDigimonUISubsystem);
 

@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Toilet.generated.h"
+#include "ToiletActor.generated.h"
 
 class UBoxComponent;
 
 UCLASS()
-class DIGIMONWORLD_API AToilet : public AActor
+class DIGIMONWORLD_API AToiletActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AToilet();
+	AToiletActor();
 
 protected:
 	// Called when the game starts or when spawned

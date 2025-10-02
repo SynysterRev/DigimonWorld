@@ -6,6 +6,9 @@
 #include "Engine/DataAsset.h"
 #include "DigimonGlobalData.generated.h"
 
+static const int32 MAX_HEALTH_MANA = 9999;
+static const int32 MAX_OTHERS_STATS = 999;
+
 UENUM(BlueprintType)
 enum class EDigimonActiveTime : uint8
 {
@@ -42,10 +45,10 @@ enum class EDigimonStatType : uint8
 {
 	Health,
 	Mana,
-	Attack,
-	Defense,
+	Strength,
+	Stamina,
 	Speed,
-	Brain
+	Wisdom
 };
 
 UENUM(BlueprintType)

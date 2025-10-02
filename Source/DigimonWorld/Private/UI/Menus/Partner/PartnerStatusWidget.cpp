@@ -10,8 +10,8 @@
 #include "Components/DigimonStatsComponent.h"
 #include "Subsystems/DigimonDataSubsystem.h"
 #include "UI/CommonWidgets/BaseInfoWidget.h"
-#include "UI/CommonWidgets/DigimonStatusGaugesWidget.h"
-#include "UI/CommonWidgets/DigimonStatusStatsWidget.h"
+#include "UI/Digimons/DigimonStatusGaugesWidget.h"
+#include "UI/Digimons/DigimonStatusStatsWidget.h"
 
 
 void UPartnerStatusWidget::InitializeStats() const
@@ -21,9 +21,10 @@ void UPartnerStatusWidget::InitializeStats() const
 	if (!StatsComponent)
 		return;
 
+	const FDigimonStats DigimonStats = StatsComponent->GetDigimonStats();
 	if (HealthPoints)
 	{
-		int32 MaxHealth = StatsComponent->DigimonStats.BaseHealth;
+		int32 MaxHealth = DigimonStats.BaseHealth;
 		int32 CurrentHealth = StatsComponent->CurrentHealth;
 		FText HealthPointsText = FText::FromString(FString::Printf(TEXT("%d / %d"), CurrentHealth, MaxHealth));
 		HealthPoints->SetValue(HealthPointsText);
@@ -31,7 +32,7 @@ void UPartnerStatusWidget::InitializeStats() const
 
 	if (ManaPoints)
 	{
-		int32 MaxMana = StatsComponent->DigimonStats.BaseMana;
+		int32 MaxMana = DigimonStats.BaseMana;
 		int32 CurrentMana = StatsComponent->CurrentMana;
 		FText ManaPointsText = FText::FromString(FString::Printf(TEXT("%d / %d"), CurrentMana, MaxMana));
 		ManaPoints->SetValue(ManaPointsText);

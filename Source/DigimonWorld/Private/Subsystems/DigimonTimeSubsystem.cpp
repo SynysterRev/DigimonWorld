@@ -25,10 +25,11 @@ void UDigimonTimeSubsystem::Tick(float DeltaTime)
 void UDigimonTimeSubsystem::SkipTime(int32 NumberOfHour)
 {
 	CurrentTimeOfDay += NumberOfHour;
+	OnTimeSkipped.Broadcast(NumberOfHour * 60.0f);
 	CalculateCurrentTime();
 }
 
-void UDigimonTimeSubsystem::CalculateCurrentTime()
+void UDigimonTimeSubsystem::CalculateCurrentTime(bool bIsTimeSkipped)
 {
 	// Handle a new day
 	if (CurrentTimeOfDay >= 24.0f)
@@ -37,19 +38,22 @@ void UDigimonTimeSubsystem::CalculateCurrentTime()
 		CurrentDay++;
 		OnNewDay.Broadcast(CurrentDay);
 	}
-    
+
 	int32 NewHour = FMath::FloorToInt(CurrentTimeOfDay);
 	int32 NewMinute = FMath::FloorToInt((CurrentTimeOfDay - NewHour) * 60.0f);
-    
+
 	if (NewHour != LastHour)
 	{
 		LastHour = NewHour;
 		OnHourChanged.Broadcast(NewHour);
 	}
-    
+
 	if (NewMinute != LastMinute)
 	{
 		LastMinute = NewMinute;
-		OnMinuteChanged.Broadcast(NewHour, NewMinute);
+		if (!bIsTimeSkipped)
+		{
+			OnMinuteChanged.Broadcast(NewHour, NewMinute);
+		}
 	}
 }

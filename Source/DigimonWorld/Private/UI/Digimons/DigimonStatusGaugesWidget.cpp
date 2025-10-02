@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/CommonWidgets/DigimonStatusGaugesWidget.h"
+#include "UI/Digimons/DigimonStatusGaugesWidget.h"
 
 #include "Components/DigimonLifeComponent.h"
 #include "UI/CommonWidgets/DoubleGaugeWidget.h"

@@ -7,7 +7,7 @@
 #include "DigimonStatusStatsWidget.generated.h"
 
 class UDigimonStatsComponent;
-class UCommonTextBlock;
+class UDigimonStatWidget;
 /**
  * 
  */
@@ -19,16 +19,16 @@ class DIGIMONWORLD_API UDigimonStatusStatsWidget : public UCommonUserWidget
 protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget), Category="Stats")
-	TObjectPtr<UCommonTextBlock> StrengthValue = nullptr;
+	TObjectPtr<UDigimonStatWidget> StrengthStat = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget), Category="Stats")
-	TObjectPtr<UCommonTextBlock> StaminaValue = nullptr;
+	TObjectPtr<UDigimonStatWidget> StaminaStat = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget), Category="Stats")
-	TObjectPtr<UCommonTextBlock> WisdomValue = nullptr;
+	TObjectPtr<UDigimonStatWidget> WisdomStat = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget), Category="Stats")
-	TObjectPtr<UCommonTextBlock> SpeedValue = nullptr;
+	TObjectPtr<UDigimonStatWidget> SpeedStat = nullptr;
 
 public:
 

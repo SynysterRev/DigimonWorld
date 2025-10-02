@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/DigimonBubbleIndicatorWidget.h"
+#include "UI/Digimons/DigimonBubbleIndicatorWidget.h"
 
 DEFINE_LOG_CATEGORY(LogDigimonBubbleWidget);
 

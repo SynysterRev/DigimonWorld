@@ -7,6 +7,8 @@
 #include "Data/DigimonBaseData.h"
 #include "DigimonStatsComponent.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogStatsComponent, Log, All);
+
 UCLASS(ClassGroup=(Custom),BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent))
 class DIGIMONWORLD_API UDigimonStatsComponent : public UActorComponent
 {
@@ -20,11 +22,11 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:
-	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Stats|Runtime")
 	FDigimonStats DigimonStats;
 	
+public:
+		
 	void RestoreHealth(int32 HealthAmount);
 	void RestoreMana(int32 ManaAmount);
 	
@@ -35,4 +37,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Stats|Runtime")
 	int32 CurrentMana;
+
+	UFUNCTION(BlueprintPure, Category="Stats")
+	const FDigimonStats& GetDigimonStats() const { return DigimonStats; }
+
+	UFUNCTION(BlueprintCallable, Category="Stats")
+	void ModifyStat(EDigimonStatType Stat, float Amount);
 };

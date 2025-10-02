@@ -13,6 +13,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHourChanged, int32, NewHour);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMinuteChanged, int32, NewHour, int32, NewMinute);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimeSkipped, int32, TotalMinutesSkipped);
+
+
 UCLASS()
 class DIGIMONWORLD_API UDigimonTimeSubsystem : public UGameInstanceSubsystem, public FTickableGameObject
 {
@@ -36,7 +39,7 @@ public:
 
 	// float GetTimeSince(float PreviousTime) const;
 
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category = "Digimon Time")
 	FOnNewDay OnNewDay;
 
 	UPROPERTY(BlueprintAssignable, Category = "Digimon Time")
@@ -44,6 +47,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Digimon Time")
 	FOnMinuteChanged OnMinuteChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Digimon Time")
+	FOnTimeSkipped OnTimeSkipped;
 
 private:
 	static constexpr float TIME_SCALE = 60.0f;
@@ -55,5 +61,5 @@ private:
 
 	bool bCanTick = true;
 
-	void CalculateCurrentTime();
+	void CalculateCurrentTime(bool bIsTimeSkipped = false);
 };

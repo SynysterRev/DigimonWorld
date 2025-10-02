@@ -3,6 +3,8 @@
 
 #include "Components/DigimonStatsComponent.h"
 
+DEFINE_LOG_CATEGORY(LogStatsComponent);
+
 // Sets default values for this component's properties
 UDigimonStatsComponent::UDigimonStatsComponent()
 {
@@ -28,6 +30,46 @@ void UDigimonStatsComponent::InitializeStats(const FDigimonStats& InBaseStats)
 	DigimonStats = InBaseStats;
 	CurrentHealth = DigimonStats.BaseHealth;
 	CurrentMana = DigimonStats.BaseMana;
+}
+
+void UDigimonStatsComponent::ModifyStat(EDigimonStatType Stat, float Amount)
+{
+	switch (Stat)
+	{
+	case EDigimonStatType::Health:
+		DigimonStats.BaseHealth = FMath::Clamp(
+			DigimonStats.BaseHealth + Amount, 0, MAX_HEALTH_MANA);
+		break;
+
+	case EDigimonStatType::Mana:
+		DigimonStats.BaseMana = FMath::Clamp(
+			DigimonStats.BaseMana + Amount, 0, MAX_HEALTH_MANA);
+		break;
+
+	case EDigimonStatType::Strength:
+		DigimonStats.BaseStrength = FMath::Clamp(
+			DigimonStats.BaseStrength + Amount, 0, MAX_OTHERS_STATS);
+		break;
+
+	case EDigimonStatType::Stamina:
+		DigimonStats.BaseStamina = FMath::Clamp(
+			DigimonStats.BaseStamina + Amount, 0, MAX_OTHERS_STATS);
+		break;
+
+	case EDigimonStatType::Speed:
+		DigimonStats.BaseSpeed = FMath::Clamp(
+			DigimonStats.BaseSpeed + Amount, 0, MAX_OTHERS_STATS);
+		break;
+
+	case EDigimonStatType::Wisdom:
+		DigimonStats.BaseWisdom = FMath::Clamp(
+			DigimonStats.BaseWisdom + Amount, 0, MAX_OTHERS_STATS);
+		break;
+
+	default:
+		UE_LOG(LogStatsComponent, Warning, TEXT("Unknown stat type in IncreaseBaseStat"));
+		break;
+	}
 }
 
 void UDigimonStatsComponent::RestoreHealth(int32 HealthAmount)

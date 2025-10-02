@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/DigimonToiletSignWidget.h"
+#include "UI/Digimons/DigimonToiletSignWidget.h"
 
 void UDigimonToiletSignWidget::OnToiletSignAnimFinished()
 {

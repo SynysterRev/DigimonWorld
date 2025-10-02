@@ -27,20 +27,57 @@ void UDigimonNeedsComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UDigimonNeedsComponent::CheckPoopTime()
+void UDigimonNeedsComponent::BeginDestroy()
 {
-	if (!DigimonOwner || bNeedToPoop)
-		return;
-
-	TimeSinceLastPoop++;
-	if (TimeSinceLastPoop >= PoopInterval)
+	if (auto* TimeSystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
 	{
-		TriggerPoopTimer();
+		TimeSystem->OnHourChanged.RemoveDynamic(this, &UDigimonNeedsComponent::OnHourChanged);
+		TimeSystem->OnMinuteChanged.RemoveDynamic(this, &UDigimonNeedsComponent::OnMinuteChanged);
+		TimeSystem->OnTimeSkipped.RemoveDynamic(this, &UDigimonNeedsComponent::OnTimeSkipped);
+	}
+	Super::BeginDestroy();
+}
+
+void UDigimonNeedsComponent::CheckPoopTime(int32 NumberMinutesPassed)
+{
+	if (bNeedToPoop)
+	{
+		TimeSinceToiletNeed++;
+
+		if (TimeSinceToiletNeed > TimeForToilet)
+		{
+			ToiletTimeOut();
+		}
+	}
+	else
+	{
+		TimeSinceLastPoop += NumberMinutesPassed;
+		if (TimeSinceLastPoop >= PoopInterval)
+		{
+			TriggerPoopTimer();
+		}
+	}
+}
+
+void UDigimonNeedsComponent::CheckHungryTime(int32 NumberMinutesPassed)
+{
+	if (bIsHungry)
+	{
+		TimeSinceHungry += NumberMinutesPassed;
+
+		if (TimeSinceHungry > MaxTimeToFeed)
+		{
+			OnHungerTimeout.Broadcast(Energy < HungerThreshold);
+			ResetHungerTimers();
+		}
 	}
 }
 
 void UDigimonNeedsComponent::TriggerPoopTimer()
 {;
+	if (!DigimonOwner)
+		return;
+	
 	bNeedToPoop = true;
 	if (UDigimonLifeComponent* LifeComponent = DigimonOwner->GetDigimonLifeComponent())
 	{
@@ -92,34 +129,14 @@ void UDigimonNeedsComponent::OnHourChanged(int32 NewHour)
 
 void UDigimonNeedsComponent::OnMinuteChanged(int32 NewHour, int32 NewMinute)
 {
-	CheckPoopTime();
-	if (bNeedToPoop)
-	{
-		TimeSinceToiletNeed++;
-
-		if (TimeSinceToiletNeed > TimeForToilet)
-		{
-			ToiletTimeOut();
-		}
-	}
-	if (bIsHungry)
-	{
-		TimeSinceHungry++;
-
-		if (TimeSinceHungry > MaxTimeToFeed)
-		{
-			OnHungerTimeout.Broadcast(Energy < HungerThreshold);
-			ResetHungerTimers();
-		}
-	}
+	CheckPoopTime(1);
+	CheckHungryTime(1);
 }
 
-
-// Called every frame
-void UDigimonNeedsComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                           FActorComponentTickFunction* ThisTickFunction)
+void UDigimonNeedsComponent::OnTimeSkipped(int32 TotalMinutesSkipped)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	CheckPoopTime(TotalMinutesSkipped);
+	CheckHungryTime(TotalMinutesSkipped);
 }
 
 void UDigimonNeedsComponent::InitializeDigimonNeeds(const FDigimonPartnerData& PartnerData,
@@ -144,6 +161,7 @@ void UDigimonNeedsComponent::InitializeDigimonNeeds(const FDigimonPartnerData& P
 	{
 		TimeSystem->OnHourChanged.AddDynamic(this, &UDigimonNeedsComponent::OnHourChanged);
 		TimeSystem->OnMinuteChanged.AddDynamic(this, &UDigimonNeedsComponent::OnMinuteChanged);
+		TimeSystem->OnTimeSkipped.AddDynamic(this, &UDigimonNeedsComponent::OnTimeSkipped);
 	}
 	if (!GlobalsData || !GlobalsData->ActiveHours.Contains(DigimonActiveTime))
 		return;

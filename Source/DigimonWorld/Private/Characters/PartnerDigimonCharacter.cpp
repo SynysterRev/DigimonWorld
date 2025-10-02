@@ -8,9 +8,6 @@
 #include "Components/DigimonStatsComponent.h"
 #include "Subsystems/DigimonDataSubsystem.h"
 
-const int32 MAX_HEALTH_MANA = 9999;
-const int32 MAX_OTHERS_STATS = 999;
-
 APartnerDigimonCharacter::APartnerDigimonCharacter()
 {
 	LifeComponent = CreateDefaultSubobject<UDigimonLifeComponent>("Life Component");
@@ -89,43 +86,10 @@ void APartnerDigimonCharacter::TryConsumeItem()
 
 void APartnerDigimonCharacter::IncreaseBaseStat(EDigimonStatType Stat, int32 Amount) const
 {
-	if (!StatsComponent) return;
-	switch (Stat)
-	{
-	case EDigimonStatType::Health:
-		StatsComponent->DigimonStats.BaseHealth = FMath::Clamp(
-			StatsComponent->DigimonStats.BaseHealth + Amount, 0, MAX_HEALTH_MANA);
-		break;
-
-	case EDigimonStatType::Mana:
-		StatsComponent->DigimonStats.BaseMana = FMath::Clamp(
-			StatsComponent->DigimonStats.BaseMana + Amount, 0, MAX_HEALTH_MANA);
-		break;
-
-	case EDigimonStatType::Attack:
-		StatsComponent->DigimonStats.BaseAttack = FMath::Clamp(
-			StatsComponent->DigimonStats.BaseAttack + Amount, 0, MAX_OTHERS_STATS);
-		break;
-
-	case EDigimonStatType::Defense:
-		StatsComponent->DigimonStats.BaseDefense = FMath::Clamp(
-			StatsComponent->DigimonStats.BaseDefense + Amount, 0, MAX_OTHERS_STATS);
-		break;
-
-	case EDigimonStatType::Speed:
-		StatsComponent->DigimonStats.BaseSpeed = FMath::Clamp(
-			StatsComponent->DigimonStats.BaseSpeed + Amount, 0, MAX_OTHERS_STATS);
-		break;
-
-	case EDigimonStatType::Brain:
-		StatsComponent->DigimonStats.BaseBrain = FMath::Clamp(
-			StatsComponent->DigimonStats.BaseBrain + Amount, 0, MAX_OTHERS_STATS);
-		break;
-
-	default:
-		UE_LOG(LogDigimonCharacter, Warning, TEXT("Unknown stat type in IncreaseBaseStat"));
-		break;
-	}
+	if (!StatsComponent)
+		return;
+	
+	StatsComponent->ModifyStat(Stat, Amount);
 }
 
 void APartnerDigimonCharacter::OnToiletNeeded()
