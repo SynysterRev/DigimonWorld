@@ -26,15 +26,10 @@ void UDigimonUISubsystem::ToiletSignAnimationEnd()
 
 void UDigimonUISubsystem::StatsGainAnimationEnd()
 {
-	UE_LOG(LogTemp, Error, TEXT("UDigimonUISubsystem::StatsGainAnimationEnd"));
-	if (StatsPopupWidget)
-	{
-		StatsPopupWidget->OnPopupClosed.RemoveDynamic(this, &UDigimonUISubsystem::StatsGainAnimationEnd);
-		if (UStackWidget* UIStack = GetOrCreateUIStack())
-		{
-			UIStack->PopWidget(StatsPopupWidget);
-		}
-	}
+	// if (UStackWidget* UIStack = GetOrCreateUIStack())
+	// {
+	// 	UIStack->PopLastWidget();
+	// }
 	SetClockVisible(true);
 	OnStatsAnimationEnd.Broadcast();
 }
@@ -61,16 +56,13 @@ UStatsPopupWidget* UDigimonUISubsystem::GetOrCreateStatsPopupWidget()
 	if (!UISettings)
 		return nullptr;
 
-	if (!StatsPopupWidget)
+	UStatsPopupWidget* StatsPopupWidget = CreateWidget<UStatsPopupWidget>(GetWorld(), UISettings->StatsPopupWidgetClass,
+	                                                                      TEXT("StatsPopupWidget"));
+	if (UStackWidget* UIStack = GetOrCreateUIStack())
 	{
-		StatsPopupWidget = CreateWidget<UStatsPopupWidget>(GetWorld(), UISettings->StatsPopupWidgetClass,
-		                                                   TEXT("StatsPopupWidget"));
-		if (UStackWidget* UIStack = GetOrCreateUIStack())
+		if (StatsPopupWidget)
 		{
-			if (StatsPopupWidget)
-			{
-				UIStack->PushWidget(StatsPopupWidget);
-			}
+			UIStack->PushWidget(StatsPopupWidget);
 		}
 	}
 	return StatsPopupWidget;
@@ -117,13 +109,9 @@ void UDigimonUISubsystem::Deinitialize()
 		ToiletSignWidget->RemoveFromParent();
 		ToiletSignWidget = nullptr;
 	}
-	if (StatsPopupWidget)
+	if (UStackWidget* UIStack = GetOrCreateUIStack())
 	{
-		StatsPopupWidget->OnPopupClosed.RemoveDynamic(this, &UDigimonUISubsystem::StatsGainAnimationEnd);
-		if (UStackWidget* UIStack = GetOrCreateUIStack())
-		{
-			UIStack->PopWidget(StatsPopupWidget);
-		}
+		UIStack->PopAllWidget();
 	}
 	Super::Deinitialize();
 }

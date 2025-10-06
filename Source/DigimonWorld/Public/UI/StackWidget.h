@@ -25,5 +25,5 @@ public:
 	void PushWidget(UCommonActivatableWidget* ActivatableWidget) const;
 	void PopWidget(UCommonActivatableWidget* ActivatableWidget) const;
 	void PopLastWidget() const;
-	
+	void PopAllWidget() const;
 };

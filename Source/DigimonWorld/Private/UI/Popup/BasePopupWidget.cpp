@@ -70,7 +70,7 @@ void UBasePopupWidget::OnCancelAction()
 void UBasePopupWidget::ClosePopup()
 {
 	OnPopupClosed.Broadcast();
-    
+	OnPopupClosed.Clear();
 	DeactivateWidget();
 }
 

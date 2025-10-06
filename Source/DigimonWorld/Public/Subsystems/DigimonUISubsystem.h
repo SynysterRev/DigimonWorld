@@ -33,9 +33,6 @@ private:
 	TObjectPtr<UDigimonToiletSignWidget> ToiletSignWidget = nullptr;
 
 	UPROPERTY()
-	TObjectPtr<UStatsPopupWidget> StatsPopupWidget = nullptr;
-
-	UPROPERTY()
 	TObjectPtr<UClockWidget> ClockWidget = nullptr;
 
 	UFUNCTION()

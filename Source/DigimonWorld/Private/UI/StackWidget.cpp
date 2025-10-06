@@ -29,3 +29,11 @@ void UStackWidget::PopLastWidget() const
 		Stack->RemoveWidget(*ActiveWidget);
 	}
 }
+
+void UStackWidget::PopAllWidget() const
+{
+	if (Stack)
+	{
+		Stack->ClearWidgets();
+	}
+}
