@@ -4,34 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "CommonUserWidget.h"
+#include "UI/CommonWidgets/BaseCommonUserWidget.h"
 #include "DigimonToiletSignWidget.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FToiletSignAnimation);
 
 UCLASS()
-class DIGIMONWORLD_API UDigimonToiletSignWidget : public UCommonUserWidget
+class DIGIMONWORLD_API UDigimonToiletSignWidget : public UBaseCommonUserWidget
 {
 	GENERATED_BODY()
-
-protected:
-	
-	UPROPERTY(Transient, meta = (BindWidgetAnim))
-	TObjectPtr<UWidgetAnimation> DisplayAnimation;
-
-	UFUNCTION()
-	void OnToiletSignAnimFinished();
-
-	void StopAndCleanupAnimation();
-
-	FWidgetAnimationDynamicEvent AnimationFinishedDelegate;
-
-public:
-
-	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
-	void PlayToiletAnimation();
-
-	UPROPERTY()
-	FToiletSignAnimation OnToiletSignAnimationEnd;
 	
 };

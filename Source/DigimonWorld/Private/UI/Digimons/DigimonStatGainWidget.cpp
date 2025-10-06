@@ -26,28 +26,34 @@ void UDigimonStatGainWidget::SetStatAndGain(int32 InBaseStat, int32 InStatGain)
 
 	if (StatGain)
 	{
-		StatGain->SetText(FText::AsNumber(InStatGain));
+		if (InStatGain > 0)
+		{
+			FString StatGainString = FString::Printf(TEXT("+%d"), InStatGain);
+			StatGain->SetText(FText::FromString(StatGainString));
+		}
+		else
+		{
+			StatGain->SetText(FText::FromString(""));
+		}
 	}
 	RemainingStatGain = InStatGain;
 }
 
-void UDigimonStatGainWidget::UpdateStatFromGain()
+bool UDigimonStatGainWidget::UpdateStatFromGain()
 {
-	if (RemainingStatGain == 0)
-		return;
+	if (RemainingStatGain == 0 || BaseStat == nullptr)
+		return false;
 	
+	RemainingStatGain--;
+	CurrentBaseStat++;
 	if (BaseStat != nullptr)
 	{
-		RemainingStatGain--;
-		CurrentBaseStat++;
-		if (BaseStat != nullptr)
-		{
-			BaseStat->SetStatValue(CurrentBaseStat);
-		}
-		if (StatGain)
-		{
-			FString StatGainString = FString::Printf(TEXT("+%d"), RemainingStatGain);
-			StatGain->SetText(FText::FromString(StatGainString));
-		}
+		BaseStat->SetStatValue(CurrentBaseStat);
 	}
+	if (StatGain)
+	{
+		FString StatGainString = FString::Printf(TEXT("+%d"), RemainingStatGain);
+		StatGain->SetText(FText::FromString(StatGainString));
+	}
+	return true;
 }

@@ -7,7 +7,7 @@
 #include "Data/DigimonMenuSettings.h"
 #include "Settings/DigimonSettings.h"
 #include "Subsystems/DigimonTimeSubsystem.h"
-#include "UI/MenuStack.h"
+#include "UI/StackWidget.h"
 #include "Utilities/DigimonSubsystems.h"
 
 DEFINE_LOG_CATEGORY(LogDigimonMenuSubsystem);
@@ -29,7 +29,7 @@ void UDigimonMenuSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UDigimonMenuSubsystem::OpenPauseMenu()
 {
-	if (UMenuStack* MenuStack = GetOrCreateMenuStack())
+	if (UStackWidget* MenuStack = GetOrCreateMenuStack())
 	{
 		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
 		{
@@ -44,7 +44,7 @@ void UDigimonMenuSubsystem::OpenPauseMenu()
 
 void UDigimonMenuSubsystem::ClosePauseMenu()
 {
-	if (UMenuStack* MenuStack = GetOrCreateMenuStack())
+	if (UStackWidget* MenuStack = GetOrCreateMenuStack())
 	{
 		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
 		{
@@ -59,7 +59,7 @@ void UDigimonMenuSubsystem::ClosePauseMenu()
 
 void UDigimonMenuSubsystem::OpenMenu(const FName& MenuName)
 {
-	if (UMenuStack* MenuStack = GetOrCreateMenuStack())
+	if (UStackWidget* MenuStack = GetOrCreateMenuStack())
 	{
 		if (UCommonActivatableWidget* NewMenu = GetOrCreateMenu(MenuName))
 		{
@@ -88,14 +88,14 @@ UCommonActivatableWidget* UDigimonMenuSubsystem::GetOrCreateMenu(FName MenuName)
 	return nullptr;
 }
 
-UMenuStack* UDigimonMenuSubsystem::GetOrCreateMenuStack()
+UStackWidget* UDigimonMenuSubsystem::GetOrCreateMenuStack()
 {
 	if (!MenuSettings)
 		return nullptr;
 
 	if (!MenuStackWidget)
 	{
-		MenuStackWidget = CreateWidget<UMenuStack>(GetWorld(), MenuSettings->MenuStackWidget, TEXT("MenuStackWidget"));
+		MenuStackWidget = CreateWidget<UStackWidget>(GetWorld(), MenuSettings->MenuStackWidget, TEXT("MenuStackWidget"));
 
 		if (MenuStackWidget)
 		{

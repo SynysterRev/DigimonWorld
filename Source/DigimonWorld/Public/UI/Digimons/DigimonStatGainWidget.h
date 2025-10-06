@@ -36,6 +36,11 @@ public:
 	FText BaseStatText;
 
 	void SetStatAndGain(int32 InBaseStat, int32 InStatGain);
-	void UpdateStatFromGain();
+
+	/**
+	 * 
+	 * @return True if still need to update, false otherwise
+	 */
+	bool UpdateStatFromGain();
 	
 };

@@ -6,7 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "DigimonMenuSettings.generated.h"
 
-class UMenuStack;
+class UStackWidget;
 class UCommonActivatableWidget;
 
 UCLASS()
@@ -17,7 +17,7 @@ class DIGIMONWORLD_API UDigimonMenuSettings : public UDataAsset
 public:
 
 	UPROPERTY(EditAnywhere, Category= "Menu")
-	TSubclassOf<UMenuStack> MenuStackWidget;
+	TSubclassOf<UStackWidget> MenuStackWidget;
 	
 	UPROPERTY(EditAnywhere, Category= "Menu")
 	TMap<FName, TSubclassOf<UCommonActivatableWidget>> MenuWidgets;

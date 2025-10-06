@@ -11,7 +11,7 @@ class UCommonActivatableWidget;
 class UDigimonMenuSettings;
 DECLARE_LOG_CATEGORY_EXTERN(LogDigimonMenuSubsystem, Log, All);
 
-class UMenuStack;
+class UStackWidget;
 
 UCLASS()
 class DIGIMONWORLD_API UDigimonMenuSubsystem : public UCommonUISubsystemBase
@@ -28,7 +28,7 @@ public:
 private:
 	
 	UPROPERTY(Transient)
-	TObjectPtr<UMenuStack> MenuStackWidget = nullptr;
+	TObjectPtr<UStackWidget> MenuStackWidget = nullptr;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UDigimonMenuSettings> MenuSettings = nullptr;
@@ -38,5 +38,5 @@ private:
 
 	UCommonActivatableWidget* GetOrCreateMenu(FName MenuName);
 
-	UMenuStack* GetOrCreateMenuStack();	
+	UStackWidget* GetOrCreateMenuStack();	
 };

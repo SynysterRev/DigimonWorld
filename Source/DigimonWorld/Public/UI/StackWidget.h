@@ -5,20 +5,20 @@
 #include "CoreMinimal.h"
 #include "CommonUserWidget.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
-#include "MenuStack.generated.h"
+#include "StackWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIGIMONWORLD_API UMenuStack : public UCommonUserWidget
+class DIGIMONWORLD_API UStackWidget : public UCommonUserWidget
 {
 	GENERATED_BODY()
 
 protected:
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCommonActivatableWidgetStack> MenuStack = nullptr;
+	TObjectPtr<UCommonActivatableWidgetStack> Stack = nullptr;
 
 public:
 

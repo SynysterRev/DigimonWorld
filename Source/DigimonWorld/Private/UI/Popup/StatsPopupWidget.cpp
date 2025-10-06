@@ -38,7 +38,43 @@ void UStatsPopupWidget::NativeConstruct()
 	};
 }
 
-void UStatsPopupWidget::InitializeStats()
+void UStatsPopupWidget::PopupOpened()
+{
+	Super::PopupOpened();
+	bUpdateStatsFromGain = true;
+}
+
+void UStatsPopupWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	UpdateStats();
+}
+
+void UStatsPopupWidget::UpdateStats()
+{
+	if (bUpdateStatsFromGain)
+	{
+		bool bNeedUpdate = false;
+		for (const auto& [StatType, Widget] : StatWidgets)
+		{
+			if (Widget)
+			{
+				if (Widget->UpdateStatFromGain())
+				{
+					bNeedUpdate = true;
+				}
+			}
+		}
+		if (!bNeedUpdate)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UStatsPopupWidget::UpdateStats"));
+			bUpdateStatsFromGain = false;
+			// ClosePopup();
+		}
+	}
+}
+
+void UStatsPopupWidget::InitializeStats(const TMap<EDigimonStatType, int32>& TrainedStats)
 {
 	if (UDigimonStatsComponent* StatsComp = GetDigimonStatsComp())
 	{
@@ -56,7 +92,8 @@ void UStatsPopupWidget::InitializeStats()
 		{
 			if (Widget)
 			{
-				Widget->SetStatAndGain(StatValues[StatType], 1);
+				Widget->SetStatAndGain(StatValues[StatType],
+				                       TrainedStats.Contains(StatType) ? TrainedStats[StatType] : 0);
 			}
 		}
 	}

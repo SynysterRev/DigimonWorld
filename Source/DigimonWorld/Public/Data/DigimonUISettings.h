@@ -7,6 +7,8 @@
 #include "DigimonUISettings.generated.h"
 
 class UDigimonToiletSignWidget;
+class UStatsPopupWidget;
+class UStackWidget;
 /**
  * 
  */
@@ -16,8 +18,14 @@ class DIGIMONWORLD_API UDigimonUISettings : public UDataAsset
 	GENERATED_BODY()
 	
 public:
+
+	UPROPERTY(EditAnywhere, Category= "UI")
+	TSubclassOf<UStackWidget> UIStackWidget;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI")
 	TSubclassOf<UDigimonToiletSignWidget> ToiletSignWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI")
+	TSubclassOf<UStatsPopupWidget> StatsPopupWidgetClass;
 	
 };

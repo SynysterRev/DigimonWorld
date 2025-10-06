@@ -5,8 +5,11 @@
 
 #include "Characters/PartnerDigimonCharacter.h"
 #include "Characters/TamerCharacter.h"
+#include "Characters/TamerController.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Subsystems/DigimonTimeSubsystem.h"
+#include "Subsystems/DigimonUISubsystem.h"
 #include "Utilities/DigimonSubsystems.h"
 
 ADigimonTrainingActor::ADigimonTrainingActor()
@@ -27,13 +30,51 @@ void ADigimonTrainingActor::OnInteracted_Implementation(AActor* Interactor)
 	if (!TamerCharacter)
 		return;
 
-	APartnerDigimonCharacter* PartnerDigimon = TamerCharacter->GetPartnerDigimon();
+	PartnerDigimon = TamerCharacter->GetPartnerDigimon();
 
 	if (!PartnerDigimon)
 		return;
 
-	PartnerDigimon->IncreaseBaseStat(MainStatToTrain, MainStatBaseValue);
-	PartnerDigimon->IncreaseBaseStat(SecondaryStatToTrain, SecondaryStatBaseValue);
+	if (ATamerController* PC = Cast<ATamerController>(UGameplayStatics::GetPlayerController(this, 0)))
+	{
+		PC->EnableCharacterInput(false);
+	}
+
+	if (UDigimonUISubsystem* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
+	{
+		UISubsystem->ShowStatsPopup(TrainedStats);
+		UISubsystem->OnStatsAnimationEnd.AddDynamic(this, &ADigimonTrainingActor::IncreaseStats);
+	}
+}
+
+void ADigimonTrainingActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (UDigimonUISubsystem* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
+	{
+		UISubsystem->OnStatsAnimationEnd.RemoveDynamic(this, &ADigimonTrainingActor::IncreaseStats);
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
+void ADigimonTrainingActor::IncreaseStats()
+{
+	if (PartnerDigimon)
+	{
+		for (const auto& [StatType, Value] : TrainedStats)
+		{
+			PartnerDigimon->IncreaseBaseStat(StatType, Value);
+		}
+	}
+
+	if (ATamerController* PC = Cast<ATamerController>(UGameplayStatics::GetPlayerController(this, 0)))
+	{
+		PC->EnableCharacterInput(true);
+	}
+
+	if (UDigimonUISubsystem* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
+	{
+		UISubsystem->OnStatsAnimationEnd.RemoveDynamic(this, &ADigimonTrainingActor::IncreaseStats);
+	}
 
 	if (UDigimonTimeSubsystem* TimeSubsystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
 	{

@@ -3,17 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUserWidget.h"
+#include "BasePopupWidget.h"
 #include "StatsPopupWidget.generated.h"
 
 enum class EDigimonStatType : uint8;
 class UDigimonStatsComponent;
 class UDigimonStatGainWidget;
-/**
- * 
- */
+
 UCLASS()
-class DIGIMONWORLD_API UStatsPopupWidget : public UCommonUserWidget
+class DIGIMONWORLD_API UStatsPopupWidget : public UBasePopupWidget
 {
 	GENERATED_BODY()
 
@@ -44,8 +42,13 @@ private:
 protected:
 
 	virtual void NativeConstruct() override;
+	virtual void PopupOpened() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	void UpdateStats();
+
+	bool bUpdateStatsFromGain = false;
 
 public:
 
-	void InitializeStats();
+	void InitializeStats(const TMap<EDigimonStatType, int32>& TrainedStats);
 };

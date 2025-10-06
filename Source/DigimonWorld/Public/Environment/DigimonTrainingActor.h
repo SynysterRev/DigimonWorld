@@ -6,6 +6,7 @@
 #include "Environment/BaseInteractableActor.h"
 #include "DigimonTrainingActor.generated.h"
 
+class APartnerDigimonCharacter;
 enum class EDigimonStatType : uint8;
 /**
  * 
@@ -22,19 +23,17 @@ public:
 protected:
 
 	virtual void OnInteracted_Implementation(AActor* Interactor) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UFUNCTION()
+	void IncreaseStats();
 
 	UPROPERTY(EditAnywhere, Category="Stats")
-	EDigimonStatType MainStatToTrain;
-
-	UPROPERTY(EditAnywhere, Category="Stats")
-	int32 MainStatBaseValue;
-
-	UPROPERTY(EditAnywhere, Category="Stats")
-	EDigimonStatType SecondaryStatToTrain;
-
-	UPROPERTY(EditAnywhere, Category="Stats")
-	int32 SecondaryStatBaseValue;
+	TMap<EDigimonStatType, int32> TrainedStats;
 
 	UPROPERTY(EditAnywhere, Category="Stats")
 	int32 NumberHoursToSkip = 1;
+
+	UPROPERTY(Transient)
+	APartnerDigimonCharacter* PartnerDigimon = nullptr;
 };
