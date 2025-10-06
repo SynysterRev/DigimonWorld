@@ -13,11 +13,9 @@ void UClockWidget::NativeConstruct()
 	if (auto* TimeSystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
 	{
 		TimeSystem->OnMinuteChanged.AddDynamic(this, &UClockWidget::OnMinuteChanged);
-        
-		// Initialiser l'affichage
-		OnMinuteChanged(FMath::FloorToInt(TimeSystem->GetCurrentTimeOfDay()), 
-					   FMath::FloorToInt((TimeSystem->GetCurrentTimeOfDay() - 
-					   FMath::FloorToInt(TimeSystem->GetCurrentTimeOfDay())) * 60.0f));
+
+		OnMinuteChanged(TimeSystem->GetCurrentHourOfDay(),
+		                TimeSystem->GetCurrentMinuteOfHour());
 	}
 }
 
@@ -35,5 +33,21 @@ void UClockWidget::OnMinuteChanged(int32 NewHour, int32 NewMinute)
 	if (TimeText)
 	{
 		TimeText->SetText(FText::FromString(FString::Printf(TEXT("%02d:%02d"), NewHour, NewMinute)));
+	}
+}
+
+void UClockWidget::SetClockVisible(bool bVisible)
+{
+	SetVisibility(bVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	if (auto* TimeSystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
+	{
+		if (bVisible)
+		{
+			TimeSystem->ResumeTime();
+		}
+		else
+		{
+			TimeSystem->PauseTime();
+		}
 	}
 }

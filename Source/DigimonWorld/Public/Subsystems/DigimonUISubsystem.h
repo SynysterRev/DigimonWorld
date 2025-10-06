@@ -6,6 +6,7 @@
 #include "CommonUISubsystemBase.h"
 #include "DigimonUISubsystem.generated.h"
 
+class UClockWidget;
 enum class EDigimonStatType : uint8;
 class UStatsPopupWidget;
 class UDigimonUISettings;
@@ -34,6 +35,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<UStatsPopupWidget> StatsPopupWidget = nullptr;
 
+	UPROPERTY()
+	TObjectPtr<UClockWidget> ClockWidget = nullptr;
+
 	UFUNCTION()
 	void ToiletSignAnimationEnd();
 
@@ -53,6 +57,10 @@ public:
 	virtual void Deinitialize() override;
 	void ShowToiletSign();
 	void ShowStatsPopup(const TMap<EDigimonStatType, int32>& TrainedStats);
+	void SetClockVisible(bool bVisible) const;
+
+	UFUNCTION(BlueprintCallable)
+	void CreateClockWidget();
 
 	FToiletAnimation OnToiletSignAnimationEnd;
 

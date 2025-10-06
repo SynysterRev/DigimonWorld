@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Data/DigimonUISettings.h"
 #include "Settings/DigimonSettings.h"
+#include "UI/ClockWidget.h"
 #include "UI/StackWidget.h"
 #include "UI/Digimons/DigimonToiletSignWidget.h"
 #include "UI/Popup/StatsPopupWidget.h"
@@ -19,6 +20,7 @@ void UDigimonUISubsystem::ToiletSignAnimationEnd()
 	{
 		ToiletSignWidget->OnShowAnimationEnd.RemoveDynamic(this, &UDigimonUISubsystem::ToiletSignAnimationEnd);
 	}
+	SetClockVisible(true);
 	OnToiletSignAnimationEnd.Broadcast();
 }
 
@@ -33,6 +35,7 @@ void UDigimonUISubsystem::StatsGainAnimationEnd()
 			UIStack->PopWidget(StatsPopupWidget);
 		}
 	}
+	SetClockVisible(true);
 	OnStatsAnimationEnd.Broadcast();
 }
 
@@ -134,6 +137,7 @@ void UDigimonUISubsystem::ShowToiletSign()
 	{
 		bIsShowingToiletSign = true;
 		ToiletSign->PlayShowAnimation();
+		SetClockVisible(false);
 		ToiletSign->OnShowAnimationEnd.AddDynamic(this, &UDigimonUISubsystem::ToiletSignAnimationEnd);
 	}
 }
@@ -144,6 +148,29 @@ void UDigimonUISubsystem::ShowStatsPopup(const TMap<EDigimonStatType, int32>& Tr
 	{
 		PopupWidget->InitializeStats(TrainedStats);
 		PopupWidget->OpenPopup();
+		SetClockVisible(false);
 		PopupWidget->OnPopupClosed.AddDynamic(this, &UDigimonUISubsystem::StatsGainAnimationEnd);
+	}
+}
+
+void UDigimonUISubsystem::SetClockVisible(bool bVisible) const
+{
+	if (ClockWidget)
+		ClockWidget->SetClockVisible(bVisible);
+}
+
+void UDigimonUISubsystem::CreateClockWidget()
+{
+	if (!UISettings)
+		return;
+
+	if (!ClockWidget)
+	{
+		ClockWidget = CreateWidget<UClockWidget>(GetWorld(), UISettings->ClockWidgetClass, TEXT("ClockWidget"));
+
+		if (ClockWidget)
+		{
+			ClockWidget->AddToViewport(20);
+		}
 	}
 }

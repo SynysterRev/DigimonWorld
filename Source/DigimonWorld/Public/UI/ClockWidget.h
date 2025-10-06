@@ -23,4 +23,8 @@ protected:
     
 	UFUNCTION()
 	void OnMinuteChanged(int32 NewHour, int32 NewMinute);
+
+public:
+
+	void SetClockVisible(bool bVisible);
 };

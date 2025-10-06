@@ -30,10 +30,17 @@ public:
 
 	float GetCurrentTimeOfDay() const { return CurrentTimeOfDay; }
 	int32 GetCurrentHourOfDay() const { return FMath::FloorToInt(CurrentTimeOfDay); }
+	int32 GetCurrentMinuteOfDay() const { return FMath::FloorToInt(CurrentTimeOfDay * 60.0f); }
+
+	int32 GetCurrentMinuteOfHour() const
+	{
+		return FMath::FloorToInt((CurrentTimeOfDay - FMath::FloorToInt(CurrentTimeOfDay)) * 60.0f);
+	}
+
 	int32 GetCurrentDay() const { return CurrentDay; }
 
-	void ResumeTime() { bCanTick = true;}
-	void PauseTime()  { bCanTick = false;}
+	void ResumeTime() { bCanTick = true; }
+	void PauseTime() { bCanTick = false; }
 
 	void SkipTime(int32 NumberOfHour);
 

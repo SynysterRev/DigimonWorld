@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "DigimonUISettings.generated.h"
 
+class UClockWidget;
 class UDigimonToiletSignWidget;
 class UStatsPopupWidget;
 class UStackWidget;
@@ -21,6 +22,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category= "UI")
 	TSubclassOf<UStackWidget> UIStackWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI")
+	TSubclassOf<UClockWidget> ClockWidgetClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI")
 	TSubclassOf<UDigimonToiletSignWidget> ToiletSignWidgetClass;

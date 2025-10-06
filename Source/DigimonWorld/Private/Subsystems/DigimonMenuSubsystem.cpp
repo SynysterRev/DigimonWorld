@@ -6,7 +6,7 @@
 #include "CommonActivatableWidget.h"
 #include "Data/DigimonMenuSettings.h"
 #include "Settings/DigimonSettings.h"
-#include "Subsystems/DigimonTimeSubsystem.h"
+#include "Subsystems/DigimonUISubsystem.h"
 #include "UI/StackWidget.h"
 #include "Utilities/DigimonSubsystems.h"
 
@@ -34,11 +34,11 @@ void UDigimonMenuSubsystem::OpenPauseMenu()
 		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
 		{
 			MenuStack->PushWidget(PauseMenu);
-			if (auto* Subsystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
-			{
-				Subsystem->PauseTime();
-			}
 		}
+	}
+	if (auto* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
+	{
+		UISubsystem->SetClockVisible(false);
 	}
 }
 
@@ -49,11 +49,11 @@ void UDigimonMenuSubsystem::ClosePauseMenu()
 		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
 		{
 			MenuStack->PopWidget(PauseMenu);
-			if (auto* Subsystem = UDigimonSubsystems::GetSubsystem<UDigimonTimeSubsystem>(this))
-			{
-				Subsystem->ResumeTime();
-			}
 		}
+	}
+	if (auto* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
+	{
+		UISubsystem->SetClockVisible(true);
 	}
 }
 
@@ -65,6 +65,10 @@ void UDigimonMenuSubsystem::OpenMenu(const FName& MenuName)
 		{
 			MenuStack->PushWidget(NewMenu);
 		}
+	}
+	if (auto* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
+	{
+		UISubsystem->SetClockVisible(false);
 	}
 }
 
