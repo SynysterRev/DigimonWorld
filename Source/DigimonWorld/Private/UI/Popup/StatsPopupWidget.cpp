@@ -47,7 +47,7 @@ void UStatsPopupWidget::PopupOpened()
 void UStatsPopupWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	UpdateStats();
+	UpdateStats(InDeltaTime);
 }
 
 void UStatsPopupWidget::OnConfirmAction()
@@ -71,7 +71,7 @@ void UStatsPopupWidget::OnConfirmAction()
 	}
 }
 
-void UStatsPopupWidget::UpdateStats()
+void UStatsPopupWidget::UpdateStats(float InDeltaTime)
 {
 	if (bUpdateStatsFromGain)
 	{
@@ -80,7 +80,7 @@ void UStatsPopupWidget::UpdateStats()
 		{
 			if (Widget)
 			{
-				if (Widget->UpdateStatFromGain())
+				if (Widget->UpdateStatFromGain(InDeltaTime))
 				{
 					bNeedUpdate = true;
 				}

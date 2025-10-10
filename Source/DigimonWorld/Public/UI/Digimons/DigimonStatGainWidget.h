@@ -24,11 +24,14 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> StatGain = nullptr;
 
-	int32 CurrentBaseStat = 0;
-	int32 RemainingStatGain = 0;
+	float CurrentBaseStat = 0;
+	float RemainingStatGain = 0;
 
 protected:
 	virtual void NativePreConstruct() override;
+
+	UPROPERTY(EditInstanceOnly)
+	float StatGainSpeed = 5.0f;
 
 public:
 
@@ -41,7 +44,7 @@ public:
 	 * 
 	 * @return True if still need to update, false otherwise
 	 */
-	bool UpdateStatFromGain();
+	bool UpdateStatFromGain(float DeltaTime);
 	void SkipUpdateStat();
 	
 };

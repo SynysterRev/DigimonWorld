@@ -6,6 +6,7 @@
 #include "CommonUserWidget.h"
 #include "DigimonStatWidget.generated.h"
 
+enum class EDigimonStatType : uint8;
 class UCommonTextBlock;
 /**
  * 
@@ -28,6 +29,9 @@ protected:
 	virtual void NativePreConstruct() override;
 	
 public:
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
+	EDigimonStatType StatType;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FText StatText;
