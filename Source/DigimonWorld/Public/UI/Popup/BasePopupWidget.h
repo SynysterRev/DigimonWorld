@@ -53,12 +53,11 @@ protected:
 	void StopAndCleanupAnimation();
 
 	FWidgetAnimationDynamicEvent AnimationFinishedDelegate;
-
+	
+	bool bInputEnabled = true;
 private:
 	
 	FUIActionBindingHandle ConfirmHandle;
 	FUIActionBindingHandle CancelHandle;
-
-	bool bInputEnabled = true;
 	
 };

@@ -57,3 +57,21 @@ bool UDigimonStatGainWidget::UpdateStatFromGain()
 	}
 	return true;
 }
+
+void UDigimonStatGainWidget::SkipUpdateStat()
+{
+	if (RemainingStatGain == 0 || BaseStat == nullptr)
+		return;
+
+	CurrentBaseStat += RemainingStatGain;
+	RemainingStatGain = 0;
+	if (BaseStat != nullptr)
+	{
+		BaseStat->SetStatValue(CurrentBaseStat);
+	}
+	if (StatGain)
+	{
+		FString StatGainString = FString::Printf(TEXT("+%d"), RemainingStatGain);
+		StatGain->SetText(FText::FromString(StatGainString));
+	}
+}

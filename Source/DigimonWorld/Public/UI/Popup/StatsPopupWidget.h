@@ -44,6 +44,7 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void PopupOpened() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	virtual void OnConfirmAction() override;
 	void UpdateStats();
 
 	bool bUpdateStatsFromGain = false;

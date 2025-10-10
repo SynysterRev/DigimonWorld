@@ -42,5 +42,6 @@ public:
 	 * @return True if still need to update, false otherwise
 	 */
 	bool UpdateStatFromGain();
+	void SkipUpdateStat();
 	
 };

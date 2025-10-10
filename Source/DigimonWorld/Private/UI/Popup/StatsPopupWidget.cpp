@@ -50,6 +50,27 @@ void UStatsPopupWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	UpdateStats();
 }
 
+void UStatsPopupWidget::OnConfirmAction()
+{
+	if (!bInputEnabled)
+		return;
+	if (bUpdateStatsFromGain)
+	{
+		for (const auto& [StatType, Widget] : StatWidgets)
+		{
+			if (Widget)
+			{
+				Widget->SkipUpdateStat();
+			}
+		}
+		bUpdateStatsFromGain = false;
+	}
+	else
+	{
+		ClosePopup();
+	}
+}
+
 void UStatsPopupWidget::UpdateStats()
 {
 	if (bUpdateStatsFromGain)
@@ -67,9 +88,7 @@ void UStatsPopupWidget::UpdateStats()
 		}
 		if (!bNeedUpdate)
 		{
-			UE_LOG(LogTemp, Error, TEXT("UStatsPopupWidget::UpdateStats"));
 			bUpdateStatsFromGain = false;
-			// ClosePopup();
 		}
 	}
 }
