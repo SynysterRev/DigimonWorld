@@ -43,6 +43,7 @@ protected:
 
 	EDigimonStage DigimonStage;
 	EDigimonAttribute DigimonAttribute;
+	EDigimonType DigimonType;
 
 public:
 	// Called every frame

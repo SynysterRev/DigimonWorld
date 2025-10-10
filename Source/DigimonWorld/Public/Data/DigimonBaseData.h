@@ -48,6 +48,9 @@ struct DIGIMONWORLD_API FDigimonBaseData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	EDigimonStage DigimonStage = EDigimonStage::Rookie;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
+	EDigimonType DigimonType = EDigimonType::None;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FDigimonStats DigimonStats;
 

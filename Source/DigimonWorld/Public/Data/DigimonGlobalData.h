@@ -23,6 +23,21 @@ enum class EDigimonActiveTime : uint8
 };
 
 UENUM(BlueprintType)
+enum class EDigimonType : uint8
+{
+	Fire,
+	Ice,
+	Air,
+	Nature,
+	Dark,
+	Light,
+	Fighter,
+	Mecha,
+	Filth,
+	None
+};
+
+UENUM(BlueprintType)
 enum class EDigimonBubbleType : uint8
 {
 	Hungry,

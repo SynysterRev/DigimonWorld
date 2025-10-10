@@ -67,6 +67,7 @@ void ADigimonCharacter::InitializeBaseData(const FDigimonBaseData& BaseData)
 {
 	DigimonStage = BaseData.DigimonStage;
 	DisplayName = BaseData.DisplayName;
+	DigimonType = BaseData.DigimonType;
 	DigimonAttribute = BaseData.DigimonAttribute;
 	StatsComponent->InitializeStats(BaseData.DigimonStats);
 	ChangeMesh(BaseData.SkeletalMesh.Get());
