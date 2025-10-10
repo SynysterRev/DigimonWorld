@@ -5,4 +5,6 @@
 
 void URangedSkillEffect::SpawnProjectile(AActor* Caster, AActor* Target)
 {
+	if (!ProjectileClass || !Caster || !Target)
+		return;
 }

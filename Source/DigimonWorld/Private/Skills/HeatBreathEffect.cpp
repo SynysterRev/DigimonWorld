@@ -3,3 +3,7 @@
 
 #include "Skills/HeatBreathEffect.h"
 
+void UHeatBreathEffect::SpawnProjectile(AActor* Caster, AActor* Target)
+{
+	Super::SpawnProjectile(Caster, Target);
+}

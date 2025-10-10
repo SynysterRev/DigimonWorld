@@ -13,5 +13,9 @@ UCLASS()
 class DIGIMONWORLD_API UHeatBreathEffect : public URangedSkillEffect
 {
 	GENERATED_BODY()
+
+protected:
+
+	virtual void SpawnProjectile(AActor* Caster, AActor* Target) override;
 	
 };

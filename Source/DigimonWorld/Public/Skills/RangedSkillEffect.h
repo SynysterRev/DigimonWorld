@@ -19,6 +19,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effect)
 	TSubclassOf<AActor> ProjectileClass;
 
-	void SpawnProjectile(AActor* Caster, AActor* Target);
+	virtual void SpawnProjectile(AActor* Caster, AActor* Target);
 	
 };
