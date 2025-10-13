@@ -30,7 +30,7 @@ enum class EDigimonType : uint8
 	Air,
 	Nature,
 	Dark,
-	Light,
+	Holy,
 	Fighter,
 	Mecha,
 	Filth,

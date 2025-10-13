@@ -20,6 +20,7 @@ class DIGIMONWORLD_API UDigimonMenuSubsystem : public UCommonUISubsystemBase
 
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
 	
 	void OpenPauseMenu();
 	void ClosePauseMenu();

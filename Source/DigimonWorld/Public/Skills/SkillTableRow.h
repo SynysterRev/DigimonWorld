@@ -25,7 +25,7 @@ struct FSkillData : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText DisplayName;
+	FName DisplayKey;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UTexture2D> Icon;

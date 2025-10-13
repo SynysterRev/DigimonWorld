@@ -109,9 +109,9 @@ void UDigimonUISubsystem::Deinitialize()
 		ToiletSignWidget->RemoveFromParent();
 		ToiletSignWidget = nullptr;
 	}
-	if (UStackWidget* UIStack = GetOrCreateUIStack())
+	if (UIStackWidget)
 	{
-		UIStack->PopAllWidget();
+		UIStackWidget->PopAllWidget();
 	}
 	Super::Deinitialize();
 }

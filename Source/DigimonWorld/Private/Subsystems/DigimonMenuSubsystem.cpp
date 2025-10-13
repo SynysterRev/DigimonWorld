@@ -5,6 +5,7 @@
 
 #include "CommonActivatableWidget.h"
 #include "Data/DigimonMenuSettings.h"
+#include "Kismet/GameplayStatics.h"
 #include "Settings/DigimonSettings.h"
 #include "Subsystems/DigimonUISubsystem.h"
 #include "UI/StackWidget.h"
@@ -27,6 +28,15 @@ void UDigimonMenuSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	}
 }
 
+void UDigimonMenuSubsystem::Deinitialize()
+{
+	if (MenuStackWidget)
+	{
+		MenuStackWidget->PopAllWidget();
+	}
+	Super::Deinitialize();
+}
+
 void UDigimonMenuSubsystem::OpenPauseMenu()
 {
 	if (UStackWidget* MenuStack = GetOrCreateMenuStack())
@@ -35,6 +45,10 @@ void UDigimonMenuSubsystem::OpenPauseMenu()
 		{
 			MenuStack->PushWidget(PauseMenu);
 		}
+	}
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		PC->SetInputMode(FInputModeUIOnly());
 	}
 	if (auto* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
 	{
@@ -50,6 +64,11 @@ void UDigimonMenuSubsystem::ClosePauseMenu()
 		{
 			MenuStack->PopWidget(PauseMenu);
 		}
+	}
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		PC->SetInputMode(FInputModeGameOnly());
+		PC->SetShowMouseCursor(false);
 	}
 	if (auto* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
 	{
