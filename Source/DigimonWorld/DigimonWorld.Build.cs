@@ -9,6 +9,6 @@ public class DigimonWorld : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[]
-			{ "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "CommonUI", "GameplayTags" });
+			{ "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "CommonUI", "GameplayTags", "Slate", "SlateCore" });
 	}
 }

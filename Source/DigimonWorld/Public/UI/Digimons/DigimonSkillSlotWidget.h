@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonActivatableWidget.h"
+#include "CommonButtonBase.h"
 #include "DigimonSkillSlotWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIGIMONWORLD_API UDigimonSkillSlotWidget : public UCommonActivatableWidget
+class DIGIMONWORLD_API UDigimonSkillSlotWidget : public UCommonButtonBase
 {
 	GENERATED_BODY()
 	
