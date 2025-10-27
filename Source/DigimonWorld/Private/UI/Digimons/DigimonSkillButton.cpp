@@ -15,4 +15,5 @@ void UDigimonSkillButton::SetSkillData(const FSkillData& InSkillData)
 		SkillBrush.SetResourceObject(SkillData.Icon);
 		SkillIcon->SetBrush(SkillBrush);
 	}
+	SetPadding(FMargin(5.0f));
 }

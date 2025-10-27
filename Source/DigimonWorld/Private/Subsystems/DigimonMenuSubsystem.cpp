@@ -45,6 +45,7 @@ void UDigimonMenuSubsystem::OpenPauseMenu()
 		{
 			MenuStack->PushWidget(PauseMenu);
 		}
+		MenuStack->SetVisibility(ESlateVisibility::Visible);
 	}
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{
@@ -64,6 +65,7 @@ void UDigimonMenuSubsystem::ClosePauseMenu()
 		{
 			MenuStack->PopWidget(PauseMenu);
 		}
+		MenuStack->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{

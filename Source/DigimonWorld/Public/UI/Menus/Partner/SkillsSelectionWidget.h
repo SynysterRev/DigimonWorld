@@ -33,7 +33,7 @@ class DIGIMONWORLD_API USkillsSelectionWidget : public UCommonActivatableWidget
 protected:
 
 	UPROPERTY(BlueprintReadWrite, Category="Grid")
-	TObjectPtr<UUniformGridPanel> SkillGridPanel = nullptr;
+	TObjectPtr<UGridPanel> SkillGridPanel = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<UDigimonSkillButton*> SkillButtons;
@@ -41,6 +41,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data")
 	FSkillSelectionData SkillSelectionData;
 
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
+	
 	virtual void NativePreConstruct() override;
 	
 };
