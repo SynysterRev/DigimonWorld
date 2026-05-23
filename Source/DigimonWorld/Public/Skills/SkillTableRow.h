@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/DigimonGlobalData.h"
 #include "Engine/DataTable.h"
 #include "SkillTableRow.generated.h"
 
@@ -31,16 +32,16 @@ struct FSkillData : public FTableRowBase
 	TObjectPtr<UTexture2D> Icon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EDigimonType SkillType;
+	EDigimonType SkillType = EDigimonType::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Power;
+	int32 Power = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ManaCost;
+	int32 ManaCost = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ESkillRange Range;
+	ESkillRange Range = ESkillRange::A;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<USkillEffect> SkillEffect;

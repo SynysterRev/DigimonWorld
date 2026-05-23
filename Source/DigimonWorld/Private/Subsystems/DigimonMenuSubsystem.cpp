@@ -5,7 +5,6 @@
 
 #include "CommonActivatableWidget.h"
 #include "Data/DigimonMenuSettings.h"
-#include "Kismet/GameplayStatics.h"
 #include "Settings/DigimonSettings.h"
 #include "Subsystems/DigimonUISubsystem.h"
 #include "UI/StackWidget.h"
@@ -39,39 +38,17 @@ void UDigimonMenuSubsystem::Deinitialize()
 
 void UDigimonMenuSubsystem::OpenPauseMenu()
 {
-	if (UStackWidget* MenuStack = GetOrCreateMenuStack())
-	{
-		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
-		{
-			MenuStack->PushWidget(PauseMenu);
-		}
-		MenuStack->SetVisibility(ESlateVisibility::Visible);
-	}
-	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
-	{
-		PC->SetInputMode(FInputModeUIOnly());
-	}
-	if (auto* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
-	{
-		UISubsystem->SetClockVisible(false);
-	}
+	OpenMenu(FName("PauseMenu"));
 }
 
 void UDigimonMenuSubsystem::ClosePauseMenu()
 {
-	if (UStackWidget* MenuStack = GetOrCreateMenuStack())
+	if (MenuStackWidget)
 	{
-		if (UCommonActivatableWidget* PauseMenu = GetOrCreateMenu("PauseMenu"))
-		{
-			MenuStack->PopWidget(PauseMenu);
-		}
-		MenuStack->SetVisibility(ESlateVisibility::Collapsed);
+		MenuStackWidget->PopLastWidget();
+		// MenuStackWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
-	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
-	{
-		PC->SetInputMode(FInputModeGameOnly());
-		PC->SetShowMouseCursor(false);
-	}
+
 	if (auto* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
 	{
 		UISubsystem->SetClockVisible(true);
@@ -80,37 +57,24 @@ void UDigimonMenuSubsystem::ClosePauseMenu()
 
 void UDigimonMenuSubsystem::OpenMenu(const FName& MenuName)
 {
-	if (UStackWidget* MenuStack = GetOrCreateMenuStack())
-	{
-		if (UCommonActivatableWidget* NewMenu = GetOrCreateMenu(MenuName))
-		{
-			MenuStack->PushWidget(NewMenu);
-		}
-	}
-	if (auto* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
-	{
-		UISubsystem->SetClockVisible(false);
-	}
-}
-
-UCommonActivatableWidget* UDigimonMenuSubsystem::GetOrCreateMenu(FName MenuName)
-{
-	if (UCommonActivatableWidget* const* Found = MenuInstances.Find(MenuName))
-	{
-		return *Found;
-	}
-
 	if (!MenuSettings)
-		return nullptr;
+       return;
 
-	if (TSubclassOf<UCommonActivatableWidget>* FoundClass = MenuSettings->MenuWidgets.Find(MenuName))
-	{
-		UCommonActivatableWidget* NewWidget = CreateWidget<UCommonActivatableWidget>(GetWorld(), *FoundClass);
-		MenuInstances.Add(MenuName, NewWidget);
-		return NewWidget;
-	}
+    UStackWidget* MenuStack = GetOrCreateMenuStack();
+    if (!MenuStack)
+       return;
 
-	return nullptr;
+    if (TSubclassOf<UCommonActivatableWidget>* FoundClass = MenuSettings->MenuWidgets.Find(MenuName))
+    {
+        MenuStack->SetVisibility(ESlateVisibility::Visible);
+        
+        MenuStack->PushWidget(*FoundClass);
+
+        if (auto* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
+        {
+           UISubsystem->SetClockVisible(false);
+        }
+    }
 }
 
 UStackWidget* UDigimonMenuSubsystem::GetOrCreateMenuStack()

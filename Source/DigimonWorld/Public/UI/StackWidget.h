@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonActivatableWidget.h"
 #include "CommonUserWidget.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 #include "StackWidget.generated.h"
@@ -17,13 +18,25 @@ class DIGIMONWORLD_API UStackWidget : public UCommonUserWidget
 
 protected:
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UCommonActivatableWidgetStack> Stack = nullptr;
 
 public:
+	template <typename T = UCommonActivatableWidget>
+	T* PushWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass, TFunctionRef<void(T&)> InitFunc) const
+	{
+		if (!Stack || !WidgetClass)
+			return nullptr;
 
-	void PushWidget(UCommonActivatableWidget* ActivatableWidget) const;
+		return Stack->AddWidget<T>(WidgetClass, InitFunc);
+	}
+	UCommonActivatableWidget* PushWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass) const
+	{
+		if (!Stack || !WidgetClass) return nullptr;
+		return Stack->AddWidget<UCommonActivatableWidget>(WidgetClass);
+	}
 	void PopWidget(UCommonActivatableWidget* ActivatableWidget) const;
 	void PopLastWidget() const;
 	void PopAllWidget() const;
+	UCommonActivatableWidget* GetActiveWidget() const;
 };

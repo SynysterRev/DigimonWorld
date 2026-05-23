@@ -14,6 +14,8 @@ UCLASS()
 class DIGIMONWORLD_API UStatsPopupWidget : public UBasePopupWidget
 {
 	GENERATED_BODY()
+	
+public:
 
 private:
 

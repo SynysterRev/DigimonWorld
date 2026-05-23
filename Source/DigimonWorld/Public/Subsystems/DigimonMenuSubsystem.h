@@ -34,10 +34,5 @@ private:
 	UPROPERTY(Transient)
 	TObjectPtr<UDigimonMenuSettings> MenuSettings = nullptr;
 
-	UPROPERTY(Transient)
-	TMap<FName, UCommonActivatableWidget*> MenuInstances;
-
-	UCommonActivatableWidget* GetOrCreateMenu(FName MenuName);
-
 	UStackWidget* GetOrCreateMenuStack();	
 };

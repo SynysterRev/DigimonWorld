@@ -51,23 +51,6 @@ UDigimonToiletSignWidget* UDigimonUISubsystem::GetOrCreateSignWidget()
 	return ToiletSignWidget;
 }
 
-UStatsPopupWidget* UDigimonUISubsystem::GetOrCreateStatsPopupWidget()
-{
-	if (!UISettings)
-		return nullptr;
-
-	UStatsPopupWidget* StatsPopupWidget = CreateWidget<UStatsPopupWidget>(GetWorld(), UISettings->StatsPopupWidgetClass,
-	                                                                      TEXT("StatsPopupWidget"));
-	if (UStackWidget* UIStack = GetOrCreateUIStack())
-	{
-		if (StatsPopupWidget)
-		{
-			UIStack->PushWidget(StatsPopupWidget);
-		}
-	}
-	return StatsPopupWidget;
-}
-
 UStackWidget* UDigimonUISubsystem::GetOrCreateUIStack()
 {
 	if (!UISettings)
@@ -132,13 +115,23 @@ void UDigimonUISubsystem::ShowToiletSign()
 
 void UDigimonUISubsystem::ShowStatsPopup(const TMap<EDigimonStatType, int32>& TrainedStats)
 {
-	if (UStatsPopupWidget* PopupWidget = GetOrCreateStatsPopupWidget())
+	if (!UISettings || !UISettings->StatsPopupWidgetClass)
+		return;
+
+	UStackWidget* UIStack = GetOrCreateUIStack();
+	if (!UIStack)
+		return;
+
+	UIStack->PushWidget<UStatsPopupWidget>(UISettings->StatsPopupWidgetClass, [this, &TrainedStats](UStatsPopupWidget& PopupWidget)
 	{
-		PopupWidget->InitializeStats(TrainedStats);
-		PopupWidget->OpenPopup();
-		SetClockVisible(false);
-		PopupWidget->OnPopupClosed.AddDynamic(this, &UDigimonUISubsystem::StatsGainAnimationEnd);
-	}
+		PopupWidget.InitializeStats(TrainedStats);
+        
+		PopupWidget.OnPopupClosed.AddDynamic(this, &UDigimonUISubsystem::StatsGainAnimationEnd);
+        
+		PopupWidget.OpenPopup();
+	});
+
+	SetClockVisible(false);
 }
 
 void UDigimonUISubsystem::SetClockVisible(bool bVisible) const

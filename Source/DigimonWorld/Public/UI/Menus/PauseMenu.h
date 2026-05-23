@@ -26,7 +26,6 @@ protected:
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 
 	virtual bool NativeOnHandleBackAction() override;
-	
 
 public:
 	

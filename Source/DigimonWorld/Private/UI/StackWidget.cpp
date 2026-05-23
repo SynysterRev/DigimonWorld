@@ -3,14 +3,6 @@
 
 #include "UI/StackWidget.h"
 
-void UStackWidget::PushWidget(UCommonActivatableWidget* ActivatableWidget) const
-{
-	if (!Stack || !ActivatableWidget)
-		return;
-	
-	Stack->AddWidgetInstance(*ActivatableWidget);
-}
-
 void UStackWidget::PopWidget(UCommonActivatableWidget* ActivatableWidget) const
 {
 	if (!Stack || ! ActivatableWidget)
@@ -36,4 +28,13 @@ void UStackWidget::PopAllWidget() const
 	{
 		Stack->ClearWidgets();
 	}
+}
+
+UCommonActivatableWidget* UStackWidget::GetActiveWidget() const
+{
+	if (Stack)
+	{
+		return Stack->GetActiveWidget();
+	}
+	return nullptr;
 }

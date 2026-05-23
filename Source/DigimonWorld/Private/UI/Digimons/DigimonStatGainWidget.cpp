@@ -70,7 +70,7 @@ void UDigimonStatGainWidget::SkipUpdateStat()
 	BaseStat->SetStatValue(CurrentBaseStat);
 	if (StatGain)
 	{
-		FString StatGainString = FString::Printf(TEXT("+%d"), RemainingStatGain);
+		FString StatGainString = FString::Printf(TEXT("+%d"), FMath::TruncToInt32(RemainingStatGain));
 		StatGain->SetText(FText::FromString(StatGainString));
 	}
 }
