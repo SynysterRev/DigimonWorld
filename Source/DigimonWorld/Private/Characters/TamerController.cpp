@@ -5,7 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Subsystems/DigimonMenuSubsystem.h"
+#include "Subsystems/DigimonUISubsystem.h"
 #include "Utilities/DigimonSubsystems.h"
 
 void ATamerController::BeginPlay()
@@ -77,8 +77,8 @@ void ATamerController::EnableMenuInput(bool bEnable) const
 
 void ATamerController::OpenPauseMenu(const FInputActionValue& Value)
 {
-	if (UDigimonMenuSubsystem* MenuSubsystem = UDigimonSubsystems::GetSubsystem<UDigimonMenuSubsystem>(this))
+	if (UDigimonUISubsystem* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
 	{
-		MenuSubsystem->OpenPauseMenu();
+		UISubsystem->OpenPauseMenu();
 	}
 }

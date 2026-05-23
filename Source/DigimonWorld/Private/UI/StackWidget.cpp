@@ -38,3 +38,8 @@ UCommonActivatableWidget* UStackWidget::GetActiveWidget() const
 	}
 	return nullptr;
 }
+
+int32 UStackWidget::GetTotalActiveWidgets() const
+{
+	return Stack->GetNumWidgets();
+}

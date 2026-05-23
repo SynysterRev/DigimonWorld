@@ -13,145 +13,176 @@
 
 DEFINE_LOG_CATEGORY(LogDigimonUISubsystem);
 
-void UDigimonUISubsystem::ToiletSignAnimationEnd()
-{
-	bIsShowingToiletSign = false;
-	if (ToiletSignWidget)
-	{
-		ToiletSignWidget->OnShowAnimationEnd.RemoveDynamic(this, &UDigimonUISubsystem::ToiletSignAnimationEnd);
-	}
-	SetClockVisible(true);
-	OnToiletSignAnimationEnd.Broadcast();
-}
-
-void UDigimonUISubsystem::StatsGainAnimationEnd()
-{
-	// if (UStackWidget* UIStack = GetOrCreateUIStack())
-	// {
-	// 	UIStack->PopLastWidget();
-	// }
-	SetClockVisible(true);
-	OnStatsAnimationEnd.Broadcast();
-}
-
-UDigimonToiletSignWidget* UDigimonUISubsystem::GetOrCreateSignWidget()
-{
-	if (!UISettings)
-		return nullptr;
-
-	if (!ToiletSignWidget)
-	{
-		ToiletSignWidget = CreateWidget<UDigimonToiletSignWidget>(GetWorld(), UISettings->ToiletSignWidgetClass,
-		                                                          TEXT("ToiletSignWidget"));
-		if (ToiletSignWidget)
-		{
-			ToiletSignWidget->AddToViewport(10);
-		}
-	}
-	return ToiletSignWidget;
-}
-
-UStackWidget* UDigimonUISubsystem::GetOrCreateUIStack()
-{
-	if (!UISettings)
-		return nullptr;
-
-	if (!UIStackWidget)
-	{
-		UIStackWidget = CreateWidget<UStackWidget>(GetWorld(), UISettings->UIStackWidget, TEXT("UIStackWidget"));
-
-		if (UIStackWidget)
-		{
-			UIStackWidget->AddToViewport(25);
-		}
-	}
-	return UIStackWidget;
-}
-
 void UDigimonUISubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
 	if (const UDigimonSettings* Settings = UDigimonSettings::GetDigimonWorldSettings())
 	{
-		if (Settings->DigimonUISettings.IsNull())
+		if (!Settings->DigimonUISettings.IsNull())
 		{
-			UE_LOG(LogDigimonUISubsystem, Error, TEXT("Digimon UI settings not referenced!"));
-			return;
+			FSoftObjectPtr SoftObj(Settings->DigimonUISettings.ToSoftObjectPath());
+			UISettings = Cast<UDigimonUISettings>(SoftObj.LoadSynchronous());
 		}
-		FSoftObjectPtr SoftObj(Settings->DigimonUISettings.ToSoftObjectPath());
-		UISettings = Cast<UDigimonUISettings>(SoftObj.LoadSynchronous());
+		else
+		{
+			UE_LOG(LogDigimonUISubsystem, Error, TEXT("Digimon UI settings not referenced in DigimonSettings!"));
+		}
 	}
 }
 
 void UDigimonUISubsystem::Deinitialize()
 {
 	bIsShowingToiletSign = false;
+
 	if (ToiletSignWidget)
 	{
 		ToiletSignWidget->OnShowAnimationEnd.RemoveDynamic(this, &UDigimonUISubsystem::ToiletSignAnimationEnd);
-		ToiletSignWidget->RemoveFromParent();
 		ToiletSignWidget = nullptr;
 	}
-	if (UIStackWidget)
+
+	if (UIRootWidget)
 	{
-		UIStackWidget->PopAllWidget();
+		UIRootWidget->RemoveFromParent();
+		UIRootWidget = nullptr;
 	}
+
 	Super::Deinitialize();
 }
 
-void UDigimonUISubsystem::ShowToiletSign()
+TSubclassOf<UCommonActivatableWidget>* UDigimonUISubsystem::GetMenuClass(FName MenuName) const
 {
-	if (bIsShowingToiletSign)
+	if (!UISettings || UISettings->MenuWidgets.IsEmpty())
+	{
+		return nullptr;
+	}
+	
+	return UISettings->MenuWidgets.Find(MenuName);
+}
+
+void UDigimonUISubsystem::EnsureUIRootCreated()
+{
+	if (UIRootWidget || !UISettings || !UISettings->UIRootClass)
 		return;
 
-	if (UDigimonToiletSignWidget* ToiletSign = GetOrCreateSignWidget())
+	UIRootWidget = CreateWidget<UUserWidget>(GetWorld(), UISettings->UIRootClass, TEXT("UIRoot"));
+	if (UIRootWidget)
 	{
-		bIsShowingToiletSign = true;
-		ToiletSign->PlayShowAnimation();
-		SetClockVisible(false);
-		ToiletSign->OnShowAnimationEnd.AddDynamic(this, &UDigimonUISubsystem::ToiletSignAnimationEnd);
+		UIRootWidget->AddToViewport(10);
+
+		MenuStack = Cast<UStackWidget>(UIRootWidget->GetWidgetFromName(TEXT("MenuStack")));
+		PopupStack = Cast<UStackWidget>(UIRootWidget->GetWidgetFromName(TEXT("PopupStack")));
+
+		ClockWidget = Cast<UClockWidget>(UIRootWidget->GetWidgetFromName(TEXT("ClockWidget")));
+		ToiletSignWidget = Cast<UDigimonToiletSignWidget>(UIRootWidget->GetWidgetFromName(TEXT("ToiletSignWidget")));
+	}
+
+	if (!MenuStack || !PopupStack)
+	{
+		UE_LOG(LogDigimonUISubsystem, Warning,
+		       TEXT("EnsureUIRootCreated: One or more Stacks are missing from WBP_UIRoot!"));
 	}
 }
 
+// ==========================================
+// --- MENUS ---
+// ==========================================
+
+void UDigimonUISubsystem::OpenPauseMenu()
+{
+	OpenMenu(FName("PauseMenu"));
+}
+
+void UDigimonUISubsystem::ClosePauseMenu()
+{
+	if (MenuStack)
+	{
+		MenuStack->PopLastWidget();
+	}
+	SetClockVisible(true);
+}
+
+void UDigimonUISubsystem::OpenMenu(const FName& MenuName)
+{
+	EnsureUIRootCreated();
+	if (!MenuStack || !UISettings) return;
+
+	if (TSubclassOf<UCommonActivatableWidget>* FoundClass = UISettings->MenuWidgets.Find(MenuName))
+	{
+		MenuStack->PushWidget(*FoundClass);
+		SetClockVisible(false);
+	}
+}
+
+// ==========================================
+// --- POPUPS ---
+// ==========================================
+
 void UDigimonUISubsystem::ShowStatsPopup(const TMap<EDigimonStatType, int32>& TrainedStats)
 {
-	if (!UISettings || !UISettings->StatsPopupWidgetClass)
-		return;
+	EnsureUIRootCreated();
+	if (!PopupStack || !UISettings || !UISettings->StatsPopupWidgetClass) return;
 
-	UStackWidget* UIStack = GetOrCreateUIStack();
-	if (!UIStack)
-		return;
-
-	UIStack->PushWidget<UStatsPopupWidget>(UISettings->StatsPopupWidgetClass, [this, &TrainedStats](UStatsPopupWidget& PopupWidget)
-	{
-		PopupWidget.InitializeStats(TrainedStats);
-        
-		PopupWidget.OnPopupClosed.AddDynamic(this, &UDigimonUISubsystem::StatsGainAnimationEnd);
-        
-		PopupWidget.OpenPopup();
-	});
+	PopupStack->PushWidget<UStatsPopupWidget>(UISettings->StatsPopupWidgetClass,
+	                                          [this, &TrainedStats](UStatsPopupWidget& PopupWidget)
+	                                          {
+		                                          PopupWidget.InitializeStats(TrainedStats);
+		                                          PopupWidget.OnPopupClosed.AddDynamic(
+			                                          this, &UDigimonUISubsystem::StatsGainAnimationEnd);
+		                                          PopupWidget.OpenPopup();
+	                                          });
 
 	SetClockVisible(false);
+}
+
+void UDigimonUISubsystem::StatsGainAnimationEnd()
+{
+	SetClockVisible(true);
+	OnStatsAnimationEnd.Broadcast();
+}
+
+// ==========================================
+// --- HUD & GAMEPLAY ---
+// ==========================================
+
+void UDigimonUISubsystem::ShowToiletSign()
+{
+	if (bIsShowingToiletSign || !ToiletSignWidget) return;
+
+	bIsShowingToiletSign = true;
+	ToiletSignWidget->SetVisibility(ESlateVisibility::Visible);
+	ToiletSignWidget->PlayShowAnimation();
+	SetClockVisible(false);
+	ToiletSignWidget->OnShowAnimationEnd.AddDynamic(this, &UDigimonUISubsystem::ToiletSignAnimationEnd);
+}
+
+void UDigimonUISubsystem::ToiletSignAnimationEnd()
+{
+	bIsShowingToiletSign = false;
+    
+	if (ToiletSignWidget)
+	{
+		ToiletSignWidget->OnShowAnimationEnd.RemoveDynamic(this, &UDigimonUISubsystem::ToiletSignAnimationEnd);
+		ToiletSignWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+    
+	SetClockVisible(true);
+	OnToiletSignAnimationEnd.Broadcast();
+}
+
+void UDigimonUISubsystem::CreateClockWidget()
+{
+	EnsureUIRootCreated();
+	if (ClockWidget)
+	{
+		ClockWidget->SetClockVisible(true);
+	}
 }
 
 void UDigimonUISubsystem::SetClockVisible(bool bVisible) const
 {
 	if (ClockWidget)
-		ClockWidget->SetClockVisible(bVisible);
-}
-
-void UDigimonUISubsystem::CreateClockWidget()
-{
-	if (!UISettings)
-		return;
-
-	if (!ClockWidget)
 	{
-		ClockWidget = CreateWidget<UClockWidget>(GetWorld(), UISettings->ClockWidgetClass, TEXT("ClockWidget"));
-
-		if (ClockWidget)
-		{
-			ClockWidget->AddToViewport(20);
-		}
+		ClockWidget->SetClockVisible(bVisible);
 	}
 }

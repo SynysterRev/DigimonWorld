@@ -3,7 +3,9 @@
 
 #include "UI/Menus/PauseMenu.h"
 
-#include "Subsystems/DigimonMenuSubsystem.h"
+#include "Components/VerticalBox.h"
+#include "Subsystems/DigimonUISubsystem.h"
+#include "UI/StackWidget.h"
 #include "UI/CommonWidgets/MenuButtonBase.h"
 #include "Utilities/DigimonSubsystems.h"
 
@@ -11,6 +13,11 @@ void UPauseMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 	PartnerButton->OnClicked().AddUObject(this, &UPauseMenu::OpenPartnerInfo);
+	
+	if (SubMenuStack)
+	{
+		SubMenuStack->OnDisplayedWidgetChanged().AddUObject(this, &UPauseMenu::OnSubMenuWidgetChanged);
+	}
 }
 
 void UPauseMenu::NativeDestruct()
@@ -21,23 +28,50 @@ void UPauseMenu::NativeDestruct()
 
 UWidget* UPauseMenu::NativeGetDesiredFocusTarget() const
 {
+	if (SubMenuStack && SubMenuStack->GetActiveWidget())
+	{
+		return SubMenuStack->GetActiveWidget()->GetDesiredFocusTarget();
+	}
 	return PartnerButton;
+}
+
+TOptional<FUIInputConfig> UPauseMenu::GetDesiredInputConfig() const
+{
+	return FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
 }
 
 bool UPauseMenu::NativeOnHandleBackAction()
 {
-	if (UDigimonMenuSubsystem* MenuSubsystem = UDigimonSubsystems::GetSubsystem<UDigimonMenuSubsystem>(this))
+	if (UDigimonUISubsystem* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
 	{
-		MenuSubsystem->ClosePauseMenu();
+		UISubsystem->ClosePauseMenu();
 		return true;
 	}
+
 	return false;
 }
 
-void UPauseMenu::OpenPartnerInfo() const
+void UPauseMenu::OnSubMenuWidgetChanged(UCommonActivatableWidget* NewWidget)
 {
-	if (UDigimonMenuSubsystem* MenuSubsystem = UDigimonSubsystems::GetSubsystem<UDigimonMenuSubsystem>(this))
+	SetMainMenuButtonsVisible(NewWidget == nullptr);
+}
+
+void UPauseMenu::OpenPartnerInfo()
+{
+	if (UDigimonUISubsystem* UISubsystem = UDigimonSubsystems::GetSubsystem<UDigimonUISubsystem>(this))
 	{
-		MenuSubsystem->OpenMenu("PartnerMenu");
+		if (TSubclassOf<UCommonActivatableWidget>* PartnerClass = UISubsystem->GetMenuClass(FName("PartnerMenu")))
+		{
+			SubMenuStack->PushWidget(*PartnerClass);
+			SetMainMenuButtonsVisible(false);
+		}
+	}
+}
+
+void UPauseMenu::SetMainMenuButtonsVisible(bool bVisible)
+{
+	if (ButtonsVerticalBox)
+	{
+		ButtonsVerticalBox->SetVisibility(bVisible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	}
 }

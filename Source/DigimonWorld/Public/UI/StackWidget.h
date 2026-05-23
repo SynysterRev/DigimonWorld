@@ -27,7 +27,6 @@ public:
 	{
 		if (!Stack || !WidgetClass)
 			return nullptr;
-
 		return Stack->AddWidget<T>(WidgetClass, InitFunc);
 	}
 	UCommonActivatableWidget* PushWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass) const
@@ -35,8 +34,15 @@ public:
 		if (!Stack || !WidgetClass) return nullptr;
 		return Stack->AddWidget<UCommonActivatableWidget>(WidgetClass);
 	}
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnStackWidgetChanged, UCommonActivatableWidget*);
+    
+	auto& OnDisplayedWidgetChanged() const 
+	{ 
+		return Stack->OnDisplayedWidgetChanged(); 
+	}
 	void PopWidget(UCommonActivatableWidget* ActivatableWidget) const;
 	void PopLastWidget() const;
 	void PopAllWidget() const;
 	UCommonActivatableWidget* GetActiveWidget() const;
+	int32 GetTotalActiveWidgets() const;
 };

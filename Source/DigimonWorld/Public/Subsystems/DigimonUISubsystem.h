@@ -6,6 +6,8 @@
 #include "CommonUISubsystemBase.h"
 #include "DigimonUISubsystem.generated.h"
 
+class UCommonActivatableWidget;
+class UCommonActivatableWidgetContainerBase;
 class UClockWidget;
 enum class EDigimonStatType : uint8;
 class UStatsPopupWidget;
@@ -16,6 +18,7 @@ class UStackWidget;
 DECLARE_LOG_CATEGORY_EXTERN(LogDigimonUISubsystem, Log, All);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FToiletAnimation);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStatsAnimation);
 
 UCLASS()
@@ -23,43 +26,59 @@ class DIGIMONWORLD_API UDigimonUISubsystem : public UCommonUISubsystemBase
 {
 	GENERATED_BODY()
 
+public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
+
+	TSubclassOf<UCommonActivatableWidget>* GetMenuClass(FName MenuName) const;
+
+	// --- MENUS ---
+	void OpenPauseMenu();
+	void ClosePauseMenu();
+	void OpenMenu(const FName& MenuName);
+
+	// --- POPUPS ---
+	void ShowStatsPopup(const TMap<EDigimonStatType, int32>& TrainedStats);
+
+	// --- HUD & GAMEPLAY ---
+	void ShowToiletSign();
+	void SetClockVisible(bool bVisible) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Digimon UI")
+	void CreateClockWidget();
+
+	UPROPERTY(BlueprintAssignable, Category = "Digimon UI | Events")
+	FToiletAnimation OnToiletSignAnimationEnd;
+
+	UPROPERTY(BlueprintAssignable, Category = "Digimon UI | Events")
+	FStatsAnimation OnStatsAnimationEnd;
+
 private:
 	bool bIsShowingToiletSign = false;
 
 	UPROPERTY(Transient)
-	TObjectPtr<UStackWidget> UIStackWidget = nullptr;
-	
-	UPROPERTY()
+	TObjectPtr<UDigimonUISettings> UISettings = nullptr;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UUserWidget> UIRootWidget = nullptr;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UStackWidget> MenuStack = nullptr;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UStackWidget> PopupStack = nullptr;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UClockWidget> ClockWidget = nullptr;
+
+	UPROPERTY(Transient)
 	TObjectPtr<UDigimonToiletSignWidget> ToiletSignWidget = nullptr;
 
-	UPROPERTY()
-	TObjectPtr<UClockWidget> ClockWidget = nullptr;
+	void EnsureUIRootCreated();
 
 	UFUNCTION()
 	void ToiletSignAnimationEnd();
 
 	UFUNCTION()
 	void StatsGainAnimationEnd();
-
-	UDigimonToiletSignWidget* GetOrCreateSignWidget();
-	UStatsPopupWidget* GetOrCreateStatsPopupWidget();
-
-	UPROPERTY(Transient)
-	TObjectPtr<UDigimonUISettings> UISettings = nullptr;
-
-	UStackWidget* GetOrCreateUIStack();	
-
-public:
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	virtual void Deinitialize() override;
-	void ShowToiletSign();
-	void ShowStatsPopup(const TMap<EDigimonStatType, int32>& TrainedStats);
-	void SetClockVisible(bool bVisible) const;
-
-	UFUNCTION(BlueprintCallable)
-	void CreateClockWidget();
-
-	FToiletAnimation OnToiletSignAnimationEnd;
-
-	FStatsAnimation OnStatsAnimationEnd;
 };
